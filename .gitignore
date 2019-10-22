@@ -97,11 +97,12 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-#added rules
-.idea/
-
 # mkdocs documentation
 /site
 
 # mypy
 .mypy_cache/
+
+#added rules
+.idea/
+*/dblp.xml
