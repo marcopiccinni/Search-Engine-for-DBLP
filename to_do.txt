@@ -14,3 +14,5 @@ TO DO LIST:
 	possibilita':
 		-a spazio vettoriale implementato da whoosh
 		-fazzy (booleano migliorato) 
+
+-Modularizzazione dei file
