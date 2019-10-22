@@ -1,0 +1,16 @@
+TO DO LIST:
+
+-Programmare il Parser SAX
+
+-Parser xmltodict vs SAX vs marco
+
+-Configurare Whoosh:
+	-Schema
+	-Indici
+
+-Definire struttura query
+
+-Scelta dei 2 metodi di ranking(almeno)
+	possibilita':
+		-a spazio vettoriale implementato da whoosh
+		-fazzy (booleano migliorato) 
