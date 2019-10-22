@@ -85,7 +85,7 @@ class Parser:
 
 
 if __name__ == "__main__":
-    with open('dblp.xml', 'rb') as f:
+    with open('../db/dblp.xml', 'rb') as f:
         P = Parser()
 
         for line in f:
