@@ -1,11 +1,4 @@
 TO DO LIST:
-	-Controllare i campi da aggiungere nella configurazione del parser SAX
-
-	-Parser xmltodict vs SAX vs marco
-
-	-Configurare Whoosh:
-		-Schema
-		-Indici
 
 	-Definire struttura query
 
@@ -23,3 +16,11 @@ TO DO LIST:
 ----------------------------------------------------------------------------------
 DONE:
 	-Programmare il Parser SAX
+
+	-Configurare Whoosh:
+		-Schema
+		-Indici
+
+	-Controllare i campi da aggiungere nella configurazione del parser SAX
+
+	-Parser xmltodict vs SAX vs marco
