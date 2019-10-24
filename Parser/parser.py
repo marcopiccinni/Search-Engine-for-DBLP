@@ -26,8 +26,7 @@ class PublicationHandler(xml.sax.ContentHandler):
 
     # -----------
     __CurrentElement = None
-
-    # writer = None
+    writer = None
 
     def __init__(self, writer):
         self.__reset()
@@ -70,8 +69,6 @@ class PublicationHandler(xml.sax.ContentHandler):
     def endElement(self, tag):
         """Called when the parsing of the publication ends"""
         if self.tag == tag:
-            # self.writer.write(self.tag + self.key + self.author + self.title + '\n')
-            # print(self.tag, self.key, self.author, self.title)
             self.writer.add_document(pubtype=self.tag,
                                      key=self.key,
                                      author=self.author,
@@ -131,8 +128,7 @@ class VenueHandler(xml.sax.ContentHandler):
 
     # -----------
     __CurrentElement = None
-
-    # writer = None
+    writer = None
 
     def __init__(self, writer):
         self.__reset(3)
@@ -142,9 +138,9 @@ class VenueHandler(xml.sax.ContentHandler):
     def __reset(self, selector):
         """A function for resetting the class attributes.
             Selector is used for the bitwise and:
-            1 to enter the first condition
-            2 to enter the second condition
-            3 to enter both of them"""
+            1 to use first condition
+            2 to use second condition
+            3 to use both of them"""
 
         self.key = ''
         self.tag = ''
@@ -191,8 +187,6 @@ class VenueHandler(xml.sax.ContentHandler):
         if tag in venue:
             for element_tag in venue:
                 if tag == element_tag:
-                    # elf.writer.write(self.tag + self.key + self.author + self.title + self.publisher + '\n')
-                    # print(self.tag, self.key, self.author, self.title, self.publisher)
                     self.writer.add_document(pubtype=self.tag,
                                              key=self.key,
                                              author=self.author,
@@ -206,8 +200,6 @@ class VenueHandler(xml.sax.ContentHandler):
         if tag in publication:
             for element_tag in publication:
                 if tag == element_tag:
-                    #  self.writer.write(self.tag + self.key + self.journal + '\n')
-                    # print(self.tag, self.key, self.journal)
                     self.writer.add_document(pubtype=self.tag,
                                              key=self.key,
                                              journal=self.journal

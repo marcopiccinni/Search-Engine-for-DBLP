@@ -11,8 +11,9 @@ from psutil import virtual_memory
 
 def resources():
     """a function that returns kwargs for the index writer.
-        We divided nproc and avaible_mem by 2 because
-        we want to parallelize the code.
+        We divided nproc and avaible_mem by 2 because we want to parallelize the indexing process.
+        Indeed we create two index for the two types of documents so, the use of the resurces must be splitted for
+        these two process.
         'Perfectly balanced as everything should be'."""
 
     nproc = round(cpu_count() / 2)  # round for the case in which we have just 1 proc
@@ -76,12 +77,13 @@ if __name__ == "__main__":
     vix = index.open_dir('indexdir/VenIndex')
 
     with ix.searcher() as searcher:
-        query = MultifieldParser(['author', 'title'], ix.schema).parse('McDermott AND Computer')
+        query = MultifieldParser(['author', 'title'], ix.schema).parse('McDermott Computer')  # AND implicito!
         results = searcher.search(query)
         count = 1
+        print('\n\t', form('Element found: ' + str(len(results)), 'bold', 'lightgrey', 'url'), end='\n\n')
         for element in results:
-            c = str(count)+' )'
-            print(form(count, 'red'))
+            print(form(str(count) + '.', 'red'))
             print(form(element['author'], 'lightblue'))
             print(form(element['title'], 'yellow'))
+            print('-' * 40)
             count += 1

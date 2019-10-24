@@ -5,7 +5,9 @@ TO DO LIST:
 	-Scelta dei 2 metodi di ranking(almeno)
 		possibilita':
 			-a spazio vettoriale implementato da whoosh
-			-fazzy (booleano migliorato) 
+			-fazzy (booleano migliorato)
+
+	-Merge di risultati tra entrambi gli indici, e ranking
 
 	-Modularizzazione dei file
 
