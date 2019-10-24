@@ -23,7 +23,7 @@ def create_schemas():
         crossref=TEXT(stored=True)
     )
 
-    venue_schema = Schema(
+    ven_schema = Schema(
         pubtype=TEXT(stored=True),
         key=ID(stored=True),
         author=TEXT(stored=True, phrase=False, sortable=True),
@@ -34,4 +34,4 @@ def create_schemas():
         ee=STORED
     )
 
-    return pub_schema, venue_schema
+    return pub_schema, ven_schema

@@ -31,7 +31,7 @@ class PublicationHandler(xml.sax.ContentHandler):
 
     def __init__(self, writer):
         self.__reset()
-        self.writer = open(writer, 'w')
+        self.writer = writer
         super(PublicationHandler, self).__init__()  # parent init
 
     def __reset(self):
@@ -70,20 +70,20 @@ class PublicationHandler(xml.sax.ContentHandler):
     def endElement(self, tag):
         """Called when the parsing of the publication ends"""
         if self.tag == tag:
-            self.writer.write(self.tag + self.key + self.author + self.title + '\n')
+            # self.writer.write(self.tag + self.key + self.author + self.title + '\n')
             # print(self.tag, self.key, self.author, self.title)
-            # self.writer.add_document(pubtype=self.tag,
-            #                          key=self.key,
-            #                          author=self.author,
-            #                          title=self.title,
-            #                          pages=self.pages,
-            #                          crossref=self.crossref,
-            #                          year=self.year,
-            #                          url=self.url,
-            #                          ee=self.ee,
-            #                          journal=self.journal,
-            #                          volume=self.volume,
-            #                          number=self.number,)
+            self.writer.add_document(pubtype=self.tag,
+                                     key=self.key,
+                                     author=self.author,
+                                     title=self.title,
+                                     pages=self.pages,
+                                     crossref=self.crossref,
+                                     year=self.year,
+                                     url=self.url,
+                                     ee=self.ee,
+                                     journal=self.journal,
+                                     volume=self.volume,
+                                     number=self.number, )
 
             self.__reset()
 
@@ -136,7 +136,7 @@ class VenueHandler(xml.sax.ContentHandler):
 
     def __init__(self, writer):
         self.__reset(3)
-        self.writer = open(writer, 'w')
+        self.writer = writer
         super(VenueHandler, self).__init__()  # parent init
 
     def __reset(self, selector):
@@ -191,27 +191,27 @@ class VenueHandler(xml.sax.ContentHandler):
         if tag in venue:
             for element_tag in venue:
                 if tag == element_tag:
-                    self.writer.write(self.tag + self.key + self.author + self.title + self.publisher + '\n')
+                    # elf.writer.write(self.tag + self.key + self.author + self.title + self.publisher + '\n')
                     # print(self.tag, self.key, self.author, self.title, self.publisher)
-                    # self.writer.add_document(pubtype=self.tag,
-                    #                          key=self.key,
-                    #                          author=self.author,
-                    #                          title=self.title,
-                    #                          publisher=self.publisher,
-                    #                          ee=self.ee,
-                    #                          url=self.url
-                    #                          )
+                    self.writer.add_document(pubtype=self.tag,
+                                             key=self.key,
+                                             author=self.author,
+                                             title=self.title,
+                                             publisher=self.publisher,
+                                             ee=self.ee,
+                                             url=self.url
+                                             )
                     self.__reset(1)
 
         if tag in publication:
             for element_tag in publication:
                 if tag == element_tag:
-                    self.writer.write(self.tag + self.key + self.journal + '\n')
+                    #  self.writer.write(self.tag + self.key + self.journal + '\n')
                     # print(self.tag, self.key, self.journal)
-                    # self.writer.add_document(pubtype=self.tag,
-                    #                          key=self.key,
-                    #                          journal=self.journal
-                    #                          )
+                    self.writer.add_document(pubtype=self.tag,
+                                             key=self.key,
+                                             journal=self.journal
+                                             )
                     self.__reset(2)
 
     def characters(self, content):
@@ -227,9 +227,9 @@ class VenueHandler(xml.sax.ContentHandler):
                 if self.__CurrentElement == 'journal':
                     self.journal += content
             elif self.__CurrentElement == "ee":
-                    self.ee += str(content)
+                self.ee += str(content)
             elif self.__CurrentElement == "url":
-                    self.url += str(content)
+                self.url += str(content)
 
 
 import time
