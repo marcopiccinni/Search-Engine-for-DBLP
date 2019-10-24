@@ -70,12 +70,18 @@ if __name__ == "__main__":
     # print('Tempo totale: ', (end - start) / 60, ' minuti')
 
     import whoosh.index as index
-    from whoosh.qparser import QueryParser
+    from whoosh.qparser import QueryParser, MultifieldParser
 
     ix = index.open_dir('indexdir/PubIndex')
+    vix = index.open_dir('indexdir/VenIndex')
 
     with ix.searcher() as searcher:
-        query = QueryParser('author', ix.schema).parse('De Pretis')
+        query = MultifieldParser(['author', 'title'], ix.schema).parse('McDermott AND Computer')
         results = searcher.search(query)
+        count = 1
         for element in results:
-            print(form(element, 'green2'))
+            c = str(count)+' )'
+            print(form(count, 'red'))
+            print(form(element['author'], 'lightblue'))
+            print(form(element['title'], 'yellow'))
+            count += 1
