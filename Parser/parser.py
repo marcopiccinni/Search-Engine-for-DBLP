@@ -230,32 +230,3 @@ class VenueHandler(xml.sax.ContentHandler):
                 self.ee += str(content)
             elif self.__CurrentElement == "url":
                 self.url += str(content)
-
-
-import time
-from multiprocessing import Process
-
-if __name__ == "__main__":
-    start = time.time()
-
-    parser = xml.sax.make_parser()
-    parser.setFeature(xml.sax.handler.feature_namespaces, 0)
-
-    # PUBLICATIONS
-    parser.setContentHandler(PublicationHandler('pub.txt'))
-    t1 = Process(target=parser.parse, args=('/home/dani/Documents/Search-Engine-for-DBLP/db/dblp.xml',))
-    t1.start()
-
-    # parser.parse('db/dblp.xml')
-
-    # VENUE
-    parser.setContentHandler(VenueHandler('venue.txt'))
-    t2 = Process(target=parser.parse, args=('/home/dani/Documents/Search-Engine-for-DBLP/db/dblp.xml',))
-    t2.start()
-
-    # parser.parse('db/dblp.xml')
-
-    t1.join()
-    t2.join()
-    end = time.time()
-    print('Tempo totale: ', (end - start) / 60, ' minuti')
