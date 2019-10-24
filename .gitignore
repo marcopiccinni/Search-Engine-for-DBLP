@@ -106,3 +106,4 @@ venv.bak/
 #added rules
 .idea/
 */dblp.xml
+indexdir/
