@@ -24,6 +24,7 @@ def resources():
 
 
 def indexing(handler, schema, parser, db_path, index_path):
+    """a function that handles the index creation"""
     index = create_in(index_path, schema)
 
     # ** returns dictionary as parameters
