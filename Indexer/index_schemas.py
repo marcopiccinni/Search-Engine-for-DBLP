@@ -11,10 +11,10 @@ def create_schemas():
     pub_schema = Schema(
         pubtype=TEXT(stored=True),
         key=ID(stored=True),
-        author=TEXT(stored=True, phrase=False, sortable=True),
+        author=TEXT(stored=True, sortable=True),
         title=TEXT(stored=True),
         pages=STORED,
-        year=TEXT(phrase=False, sortable=True),
+        year=TEXT(sortable=True),
         journal=TEXT(stored=True, sortable=True),
         volume=STORED,
         number=STORED,
@@ -26,10 +26,10 @@ def create_schemas():
     ven_schema = Schema(
         pubtype=TEXT(stored=True),
         key=ID(stored=True),
-        author=TEXT(stored=True, phrase=False, sortable=True),
+        author=TEXT(stored=True, sortable=True),
         title=TEXT(stored=True),
-        journal=TEXT(stored=True, phrase=False, sortable=True),
-        publisher=TEXT(stored=True, phrase=False, sortable=True),
+        journal=TEXT(stored=True, sortable=True),
+        publisher=TEXT(stored=True, sortable=True),
         url=STORED,
         ee=STORED
     )

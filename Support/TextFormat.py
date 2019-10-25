@@ -58,6 +58,9 @@ def form(string, *args):
         It's possible change colors, styles and selection mode.
         There is also some pre-configurated background style.
     """
+    # if not isANSIsupported():
+    #     return string
+
     text = str(string)
     for arg in args:
         color_s = str(arg).upper()
