@@ -48,8 +48,7 @@ class TextCode:
     @staticmethod
     def codes():
         """To stamp all the possible value could be passed to color function"""
-        for text_type in tuple(TextCode.__dict__.keys())[
-                         3:41]:  # [3:41] is for take only the important key for the use.
+        for text_type in tuple(TextCode.__dict__.keys())[3:40]:  # [3:41] is for take only the important key for the use.
             print(text_type, end=', ')
         print('\b\b')
 
@@ -62,7 +61,7 @@ def form(string, *args):
     text = str(string)
     for arg in args:
         color_s = str(arg).upper()
-        if color_s in tuple(TextCode.__dict__.keys())[3:41]:
+        if color_s in tuple(TextCode.__dict__.keys())[3:40]:
             text = TextCode.__dict__.get(color_s) + text
     return text + TextCode.CEND
 
