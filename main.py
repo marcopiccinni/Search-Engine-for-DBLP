@@ -10,10 +10,10 @@ if __name__ == "__main__":
     while make_choice:
         choice = input('Do you want to create the indexes? [y/n]')
         if choice == 'y':
-            choice = False
+            make_choice = False
             Index.create_ixs(Index())
         elif choice == 'n':
-            choice = False
+            make_choice = False
         else:
             print(form('you MUST choice y or n', 'orange', 'bold'))
 

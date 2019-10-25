@@ -11,13 +11,14 @@ from Support.TextFormat import form
 
 
 class Index:
-    index_main_dir = '../indexdir'
-    pub_index_path = '../indexdir/PubIndex'
-    ven_index_path = '../indexdir/VenIndex'
-    db_path = '../db/dblp.xml'
+    """Due to this class is called in the main file, the path begins to the main directory """
+    index_main_dir = 'indexdir/'
+    pub_index_path = 'indexdir/PubIndex'
+    ven_index_path = 'indexdir/VenIndex'
+    db_path = 'db/dblp.xml'
 
-    def __init__(self, path_db='../db/dblp.xml'):
-        self.db_path = path_db
+    def __init__(self, db_path=db_path):
+        self.db_path = os.path.abspath(db_path)
 
     @staticmethod
     def __resources(self):
@@ -75,7 +76,7 @@ class Index:
         t1.start()
 
         # VENUE
-        t2 = Process(target=self.__indexing, args=(VenueHandler, ven_schema, parser, self.pub_index_path, ))
+        t2 = Process(target=self.__indexing, args=(VenueHandler, ven_schema, parser, self.ven_index_path, ))
         t2.start()
 
         t1.join()
