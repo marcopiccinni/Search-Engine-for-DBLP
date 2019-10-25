@@ -33,10 +33,19 @@ DONE:
 
 DOMANDE:
     Suddivisione tra VENUE e PUBLICATIONS?
-        // improceedings sembra vada tra i venue ma non ha attributo PUBLISHER
-        // in venue quindi rimarrebbero soltanto i book (unico che ha publisher)
+        - <inproceedings> sembra vada tra i "Venue" ma non ha attributo PUBLISHER
+        - in "Venue" quindi rimarrebbero soltanto i <book> (unico che ha publisher)
 
-    La ricerca va in OR o in AND?
+        - campi su cui indicizzare (in cui cercare) sono i seguenti?
+           # Author | Title | Year  -> Publication
+           # Title | Publisher      -> Venue
+
+    Importante utilizzare i "crossref"? Esempio da <inproceedings> verso <proceedings>
+        - Nel caso vanno mostrati/indicizzati/...
+
+    La ricerca tra più "search_element" (query da utente da spezzare) in OR o in AND?
+        - Cercare i documenti che rispondono affermativamente a tutti i "search_element" (AND)
+            o unire i risultati provenienti da ogni "search_element" (OR) ?
 
 
 
