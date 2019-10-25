@@ -8,7 +8,7 @@ venue = ['book', 'inproceedings']
 class PublicationHandler(xml.sax.ContentHandler):
     """Class for handle parsing events and adding documents to the publication index"""
 
-    # variable that defines a publication document
+    # variable that defines if it is a publication
     isPublication = False
 
     # attributes list
