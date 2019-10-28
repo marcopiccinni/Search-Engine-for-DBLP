@@ -3,41 +3,49 @@ from itertools import product
 from Parser.parser import publication
 
 
-def find_query(string):
-    words = [x for x in string.split(' ')]  # split single words
+def to_whoosh_query(string):
+    """ Used to transform the user query in the whoosh query language.
+        Return the two string for the whoosh parser (publication and venue respectly)."""
+    q_list = _find_query(string)
+    pub_list = []
+    ven_list = []
+    for q in q_list:
+        if _is_publication(q, pub_list):
+            continue
+        elif _is_venue(q, ven_list):
+            continue
+        # If it isn't exactly in ones, query goes in both.
+        pub_list.append(q)
+        ven_list.append(q)
+    return ' OR '.join(pub_list), ' OR '.join(ven_list)
+
+
+def _find_query(string):
+    """ Used to obtain the single user queries.
+        The query user format is: -----
+        """
+    words = [x for x in string.split(' ')]  # Split single words by spaces.
     c = True
-    while c:
+    while c:  # Regroup the phrases with " .
         c = False
+        # If the currently word ends with ", it will be grouped with the previous one.
+        # The currently words is removed to the list.
+        # If there isn't changes the function ends.
         for w in words:
             if w.count('"') != 2 and w.endswith('"'):
                 words[words.index(w) - 1] += ' ' + words[words.index(w)]
-                words.remove(words[words.index(w)])
+                words.remove(w)
                 c = True
     return words
 
 
-def to_whoosh_query(q_list):
-    ven_list = []
-    pub_list = []
-    for q in q_list:
-        # is_venue()
-        if is_publication(q, pub_list):
-            continue
-        elif is_venue(q, ven_list):
-            continue
-        pub_list.append(q)
-        ven_list.append(q)
-
-    print('[p] ', pub_list)
-    print('[v] ', ven_list)
-    return ' OR '.join(pub_list), ' OR '.join(ven_list)
-    # return pub_list, ven_list, all_list
-
-
-def is_publication(string, list):
+def _is_publication(string, list):
+    """ Return True and updates the publication_list if a query is well formatted for the publication index."""
     s = ''
+    # First check if the first word is a publication type. it could ends with a . or a : .
     if string.startswith(
             tuple([str(x[0] + x[1]) for x in product(publication + ['inproc', 'publication', ], (':', '.'))])):
+        # In this case an attribute is specified.
         if string.count('.'):
             s += string[string.index('.') + 1:]
             if not s.startswith(('author:', 'title:', 'year:'), ):
@@ -50,13 +58,13 @@ def is_publication(string, list):
                 s += ' pubtype:' + string[:string.index(':')]
                 if not s.startswith(('author:', 'title:', 'year:'), ):
                     return False
-
         list.append('(' + s + ')')
         return True
     return False
 
 
-def is_venue(string, list):
+def _is_venue(string, list):
+    """ Return True and updates the venue_list if a query is well formatted for the venue_index."""
     if string.startswith(('venue.', 'venue:'), ):
         if string[5] == ':':
             list.append('(' + string[6:] + ')')
@@ -65,9 +73,10 @@ def is_venue(string, list):
         return True
     return False
 
+
 if __name__ == '__main__':
     string = 'article.author:"Marco Piccinni" venue.title:"Questo è un test" publication:"Computer science" ' \
              'venue:prova "Sembra davvero funzionare" sembra'
-    words = find_query(string)
-    # print(words)
-    print(to_whoosh_query(words))
+    pub_query, ven_query = to_whoosh_query(string)
+    print('[p] ', pub_query)
+    print('[v] ', ven_query)
