@@ -39,18 +39,26 @@ class TextCode:
     GREYBG = '\33[100m'
     REDBG2 = '\33[101m'
     GREENBG2 = '\33[102m'
-    YELLOWBG2 = '\33[103m'
+    YELLOWBG = '\33[103m'
     BLUEBG2 = '\33[104m'
-    VIOLETBG2 = '\33[105m'
-    BEIGEBG2 = '\33[106m'
-    WHITEBG2 = '\33[107m'
+    VIOLETBG = '\33[105m'
+    BEIGEBG = '\33[106m'
+    WHITEBG = '\33[107m'
 
     @staticmethod
     def codes():
         """To stamp all the possible value could be passed to color function"""
-        for text_type in tuple(TextCode.__dict__.keys())[3:40]:  # [3:41] is for take only the important key for the use.
+        for text_type in tuple(TextCode.__dict__.keys())[3:40]:  # [3:40] is for take only the important key to use.
             print(text_type, end=', ')
         print('\b\b')
+
+
+def cprint(string, *args, start='', end='\n'):
+    """ Print formatted text, more args can be passed at the same time.
+            It's possible change colors, styles and selection mode.
+            There is also some pre-configurated background style.
+        """
+    print(start + form(string, *args), end=end)
 
 
 def form(string, *args):
@@ -60,7 +68,6 @@ def form(string, *args):
     """
     # if not isANSIsupported():
     #     return string
-
     text = str(string)
     for arg in args:
         color_s = str(arg).upper()
@@ -75,8 +82,11 @@ def help():
         print('Your sistem may not be able to use ANSI format for text. '
               'Use only if you know what you are doing, or if the next lines are shown correctly.\n')
     print(form('Usage:', 'blue', 'bold', 'selected') +
+          form('\n\tfrom Support.TextFormat import cprint', 'yellow') +
+          form("\n\tcprint('This is a yellow italic text.','yellow','italic',...)", 'yellow', 'italic') +
+          '\n  ' + form('or', 'red', 'bold') +
           form('\n\tfrom Support.TextFormat import form', 'yellow') +
-          form("\n\tprint(form('This is a yellow text.','yellow',...))", 'yellow') +
+          form("\n\tprint(form('This is a yellow bold text.','yellow','bold',...))", 'yellow', 'bold') +
           '\n' +
           form('\nFor all the possible codes: TextCode.codes()', 'green2')
           )

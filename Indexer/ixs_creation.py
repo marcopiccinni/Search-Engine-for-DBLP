@@ -7,7 +7,7 @@ import time
 from shutil import rmtree
 from multiprocessing import Process, cpu_count
 from psutil import virtual_memory
-from Support.TextFormat import form
+from Support.TextFormat import cprint
 
 
 class Index:
@@ -45,16 +45,16 @@ class Index:
         parser.parse(self.db_path)
 
         if 'Pub' in index_path:
-            print(form('Pubs commit started', 'green'))
+            cprint('Pubs commit started', 'green')
         else:
-            print(form('Venues commit started', 'lightblue'))
+            cprint('Venues commit started', 'lightblue')
 
         writer.commit()
 
         if 'Pub' in index_path:
-            print(form('Pubs commit ended', 'green'))
+            cprint('Pubs commit ended', 'green')
         else:
-            print(form('Venues commit ended', 'lightblue'))
+            cprint('Venues commit ended', 'lightblue')
 
     def create_ixs(self):
         start = time.time()

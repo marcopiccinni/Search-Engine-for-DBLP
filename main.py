@@ -1,5 +1,6 @@
 from whoosh.query import FuzzyTerm
-from Support.TextFormat import form
+from Support.TextFormat import cprint, form
+from Support.TextArt import welcome_text
 import whoosh.index as index
 from whoosh.qparser import QueryParser, MultifieldParser
 from whoosh import qparser
@@ -7,6 +8,7 @@ from Indexer.ixs_creation import Index
 import os
 
 if __name__ == "__main__":
+    welcome_text('orange')
 
     # make_choice = True
     # while make_choice:
@@ -34,11 +36,14 @@ if __name__ == "__main__":
 
         # to show a pages (1 is the First page. Top 10 results
         # results = searcher.search_page(query, 1, pagelen=20)
-        print('\n\t', form('Element found: ' + str(len(results)), 'bold', 'lightgrey', 'url'), end='\n\n')
+        # print('\n\t', form('Element found: ' + str(len(results)), 'bold', 'lightgrey', 'url'), end='\n\n')
+        cprint('Element found: ' + str(len(results)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
         for element in results:
             print(form(str(count) + '.', 'red'), 'score = ', element.score)
-            print(form(element['author'], 'lightblue'), end='')
-            print(form(element['title'], 'yellow'))
+            # print(form(element['author'], 'lightblue'), end='')
+            cprint(element['author'], 'lightblue', start='\t', end='')
+            # print(form(element['title'], 'yellow'))
+            cprint(element['title'], 'yellow')
             print('-' * 40)
             count += 1
 
@@ -46,11 +51,13 @@ if __name__ == "__main__":
         query2 = MultifieldParser(['title', 'author'], vix.schema).parse('title:(computer science) OR author:(Denning)')
         # results2 = s.search_page(query2, 1)
         results2 = s.search(query2)
-        print('\n\t', form('Element found: ' + str(len(results2)), 'bold', 'lightgrey', 'url'), end='\n\n')
+        # print('\n\t', form('Element found: ' + str(len(results2)), 'bold', 'lightgrey', 'url'), end='\n\n')
+        cprint('Element found: ' + str(len(results2)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
         for element in results2:
             print(form(str(count) + '.', 'red'), 'score = ', element.score)
-            print(form(element['author'], 'lightblue'), end='')
-            print(form(element['title'], 'yellow'))
+            # print(form(element['author'], 'lightblue'), end='')
+            cprint(element['author'], 'lightblue', start='\t', end='')
+            # print(form(element['title'], 'yellow'))
+            cprint(element['title'], 'yellow')
             print('-' * 40)
             count += 1
-

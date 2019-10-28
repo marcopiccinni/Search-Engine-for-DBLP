@@ -1,5 +1,5 @@
 import xml.sax
-from Support.TextFormat import form
+from Support.TextFormat import cprint
 
 publication = ['article', 'incollection', 'phdthesis', 'mastersthesis']
 venue = ['book', 'inproceedings']
@@ -52,11 +52,11 @@ class PublicationHandler(xml.sax.ContentHandler):
 
     def startDocument(self):
         """Called when the XML Parser starts reading the file"""
-        print(form('Publication indexing started.\n', 'green'))
+        cprint('Publication indexing started.\n', 'green')
 
     def endDocument(self):
         """Called when the parsing is completed"""
-        print(form('Publication parsing completed.\n', 'green'))
+        cprint('Publication parsing completed.\n', 'green')
 
     def startElement(self, tag, attributes):
         """Called when a publication is parsed"""
@@ -160,11 +160,11 @@ class VenueHandler(xml.sax.ContentHandler):
 
     def startDocument(self):
         """Called when the XML Parser starts reading the file"""
-        print(form('Venue indexing started.\n', 'lightblue'))
+        cprint('Venue indexing started.\n', 'lightblue')
 
     def endDocument(self):
         """Called when the parsing is completed"""
-        print(form('Venue parsing completed.\n', 'lightblue'))
+        cprint('Venue indexing completed.\n', 'lightblue')
 
     def startElement(self, tag, attributes):
         """Called when a venue is parsed"""
