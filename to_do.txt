@@ -1,6 +1,7 @@
 TO DO LIST:
 
 	-Definire struttura query
+	    - trasformare userQuery in WhooshQuery (nltk?)
 
 	-Scelta dei 2 metodi di ranking(almeno)
 		possibilita':
