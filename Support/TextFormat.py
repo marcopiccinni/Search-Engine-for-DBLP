@@ -18,11 +18,11 @@ class TextCode:
     LIGHTGREY = '\33[37m'
     # Secondary line color
     DARKGREY = '\33[90m'
-    LIGHTRED = '\33[91m'
+    PINK = '\33[91m'
     LIGHTGREEN = '\33[92m'
     YELLOW = '\33[93m'
     LIGHTBLUE = '\33[94m'
-    PINK = '\33[95m'
+    VIOLET = '\33[95m'
     LIGHTCYAN = '\33[96m'
 
     # Standard background color
@@ -41,7 +41,7 @@ class TextCode:
     YELLOWBG = '\33[103m'
     BLUEBG2 = '\33[104m'
     VIOLETBG = '\33[105m'
-    BEIGEBG = '\33[106m'
+    CYANBG2 = '\33[106m'
     WHITEBG = '\33[107m'
 
     @staticmethod

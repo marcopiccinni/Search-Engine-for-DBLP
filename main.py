@@ -1,31 +1,18 @@
 from whoosh.query import FuzzyTerm
 from Support.TextFormat import cprint, form
 from Support.TextArt import welcome_text, menu_text
-import whoosh.index as index
 from whoosh.qparser import QueryParser, MultifieldParser
 from whoosh import qparser
-from Indexer.ixs_creation import Index
 import os
 from Query.uquery import to_whoosh_query
 
 if __name__ == "__main__":
-    welcome_text('orange', 'blink')
-    menu_text('lightgreen', 'bold')
-    os.abort()
-    # make_choice = True
-    # while make_choice:
-    #     choice = input('Do you want to create the indexes? [y/n]')
-    #     if choice == 'y':
-    #         make_choice = False
-    #         Index.create_ixs(Index())
-    #     elif choice == 'n':
-    #         make_choice = False
-    #     else:
-    #         print(form('you MUST choice y or n', 'orange', 'bold'))
+    welcome_text('green', 'blink')
+    menu_text('orange', 'bold')
+
 
     """query tries """
-    pix = index.open_dir('indexdir/PubIndex')
-    vix = index.open_dir('indexdir/VenIndex')
+
 
     # Interattivita' con utente
 
