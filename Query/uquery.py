@@ -15,8 +15,8 @@ def to_whoosh_query(string):
         elif _is_venue(q, ven_list):
             continue
         # If it isn't exactly in ones, query goes in both.
-        pub_list.append(q)
-        ven_list.append(q)
+        pub_list.append('(' + q + ')')
+        ven_list.append('(' + q + ')')
     return ' OR '.join(pub_list), ' OR '.join(ven_list)
 
 
@@ -36,6 +36,13 @@ def _find_query(string):
                 words[words.index(w) - 1] += ' ' + words[words.index(w)]
                 words.remove(w)
                 c = True
+                continue
+            # to regroup words that is search term but spaces separeted
+            if words[words.index(w) - 1].endswith(':'):
+                words[words.index(w) - 1] += words[words.index(w)]
+                words.remove(w)
+                c = True
+
     return words
 
 
@@ -49,15 +56,14 @@ def _is_publication(string, list):
         if string.count('.'):
             s += string[string.index('.') + 1:]
             if not s.startswith(('author:', 'title:', 'year:'), ):
-                return False
+                # ERROR
+                return True
             if not string.startswith('publication'):
                 s += ' pubtype:' + string[:string.index('.')]
         else:
             s += string[string.index(':') + 1:]
             if not string.startswith('publication'):
                 s += ' pubtype:' + string[:string.index(':')]
-                if not s.startswith(('author:', 'title:', 'year:'), ):
-                    return False
         list.append('(' + s + ')')
         return True
     return False
@@ -70,12 +76,15 @@ def _is_venue(string, list):
             list.append('(' + string[6:] + ')')
         elif string.startswith(('title:', 'publisher:'), 6):
             list.append('(' + string[string.index('.') + 1:] + ')')
+        else:
+            # ERROR
+            return True
         return True
     return False
 
 
 if __name__ == '__main__':
-    string = 'article.author:"Marco Piccinni" venue.title:"Questo è un test" publication:"Computer science" ' \
+    string = 'article.author: "Marco Piccinni" publication.title: "Questo è un test" article:"Computer science" ' \
              'venue:prova "Sembra davvero funzionare" sembra'
     pub_query, ven_query = to_whoosh_query(string)
     print('[p] ', pub_query)
