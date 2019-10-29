@@ -51,3 +51,15 @@ DOMANDE:
 
 
 
+ POST-RICEVIMENTO:
+ 	-inproceeding in Publication
+ 	-proceeding in Venue
+
+ 	journal attenzione perche' e' annidato
+
+ 	controllare publisher rivista
+
+ 	crossref serve per fare full outer join tra due query. Se cerco in pub ed in venue e trovo un articolo in una conferenza quando unisco i due risultati
+ 	ci deve essere una riga unica invece che due righe dato che matchano
+
+ 	gestire l'unione di due query in OR
