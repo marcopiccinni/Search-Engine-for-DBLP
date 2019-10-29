@@ -6,7 +6,6 @@ class TextCode:
     ITALIC = '\33[3m'
     URL = '\33[4m'
     BLINK = '\33[5m'
-    BLINK2 = '\33[6m'
     SELECTED = '\33[7m'
     # Standard line color
     BLACK = '\33[30m'
@@ -48,7 +47,7 @@ class TextCode:
     @staticmethod
     def codes():
         """To stamp all the possible value could be passed to color function"""
-        for text_type in tuple(TextCode.__dict__.keys())[3:40]:  # [3:40] is for take only the important key to use.
+        for text_type in tuple(TextCode.__dict__.keys())[3:39]:  # [3:39] is for take only the important key to use.
             print(text_type, end=', ')
         print('\b\b')
 
@@ -71,7 +70,7 @@ def form(string, *args):
     text = str(string)
     for arg in args:
         color_s = str(arg).upper()
-        if color_s in tuple(TextCode.__dict__.keys())[3:40]:
+        if color_s in tuple(TextCode.__dict__.keys())[3:39]:
             text = TextCode.__dict__.get(color_s) + text
     return text + TextCode.CEND
 
