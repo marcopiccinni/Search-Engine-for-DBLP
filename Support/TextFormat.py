@@ -94,7 +94,7 @@ def help():
 def isANSIsupported():
     """Return True if the current running terminal allow ANSI format of the text,
     if it doesn't or it's not sure False is return"""
-    import sys, os, time, platform
+    import sys, os, platform
     for handle in [sys.stdout]:
         if (hasattr(handle, "isatty") and handle.isatty()) or \
                 ('TERM' in os.environ and os.environ['TERM'] == 'ANSI'):
@@ -106,4 +106,6 @@ def isANSIsupported():
 
 
 if __name__ == "__main__":
-    help()
+    # help()
+    print(str(form('text', 'green')))
+    print(str(form('text', 'lightgreen')))

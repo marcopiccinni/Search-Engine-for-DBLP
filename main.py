@@ -5,14 +5,16 @@ from whoosh.qparser import QueryParser, MultifieldParser
 from whoosh import qparser
 import os
 from Query.uquery import to_whoosh_query
+from GUI.menu import check_ixs, Menu
 
 if __name__ == "__main__":
     welcome_text('green', 'blink')
     menu_text('orange', 'bold')
-
+    menu = Menu()
+    menu.start()
+    pix, vix = check_ixs()
 
     """query tries """
-
 
     # Interattivita' con utente
 

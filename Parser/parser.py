@@ -1,8 +1,8 @@
 import xml.sax
 from Support.TextFormat import cprint
 
-publication = ['article', 'incollection', 'phdthesis', 'mastersthesis']
-venue = ['book', 'inproceedings']
+publication = ['article', 'incollection', 'phdthesis', 'mastersthesis', 'inproceedings']
+venue = ['book', 'proceedings']
 
 
 class PublicationHandler(xml.sax.ContentHandler):
@@ -123,6 +123,7 @@ class VenueHandler(xml.sax.ContentHandler):
     title = ''
     journal = ''
     publisher = ''
+    year = ''
     url = ''
     ee = ''
     parent = False
@@ -151,6 +152,7 @@ class VenueHandler(xml.sax.ContentHandler):
             self.author = ''
             self.title = ''
             self.publisher = ''
+            self.year = ''
             self.ee = ''
             self.url = ''
 
@@ -194,7 +196,8 @@ class VenueHandler(xml.sax.ContentHandler):
                                              title=self.title,
                                              publisher=self.publisher,
                                              ee=self.ee,
-                                             url=self.url
+                                             url=self.url,
+                                             year=self.year,
                                              )
                     self.__reset(1)
 
@@ -223,3 +226,5 @@ class VenueHandler(xml.sax.ContentHandler):
                 self.ee += str(content)
             elif self.__CurrentElement == "url":
                 self.url += str(content)
+            elif self.__CurrentElement == "year":
+                self.year += str(content)

@@ -31,7 +31,8 @@ def create_schemas():
         journal=TEXT(stored=True, sortable=True),
         publisher=TEXT(stored=True, sortable=True),
         url=STORED,
-        ee=STORED
+        ee=STORED,
+        year=TEXT(sortable=True),
     )
 
     return pub_schema, ven_schema
