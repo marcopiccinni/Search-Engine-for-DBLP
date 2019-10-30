@@ -19,7 +19,7 @@ if __name__ == "__main__":
     # Interattivita' con utente
 
     # se io volessi cercare in AND con 'year' per trovare https://dblp.uni-trier.de/rec/xml/journals/kybernetes/Osimani14.xml?
-    pquery, vquery = to_whoosh_query('publication:"Computer science" publication.title:2015')
+    pquery, vquery = to_whoosh_query('publication.author:"Vianu" publication.year:2018 venue:VLDB')
 
     with pix.searcher() as searcher:
         # "" search for phrase in which the maximum distance between each word is 1
@@ -27,24 +27,20 @@ if __name__ == "__main__":
         #   as spaces, colons, or brackets.
         query = qparser.MultifieldParser(['pubtype', 'author', 'title', 'year'], pix.schema)  # termclass=FuzzyTerm)
 
-        q = query.parse('"Spectre Attacks: "')
-        presults = searcher.search(q, limit=1)
+        q = query.parse(pquery)
+        presults = searcher.search(q, limit=None)
         count = 1
-        cprint('Element found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
-        for element in presults:
-            print(form(str(count) + '.', 'red'), 'score = ', element.score)
-            cprint(element['author'], 'lightblue', start='\t', end='')
-            cprint(element['title'], 'yellow')
-            print('-' * 40)
-            count += 1
+        cprint('Element found[pub]: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
+
+        plist = [{'score': el.score, 'pub': el.items()} for el in presults]
 
     with vix.searcher() as s:
-        query2 = MultifieldParser(['title', 'author'], vix.schema).parse('title:(computer science) OR author:(Denning)')
-        vresults = s.search(query2)
+        query2 = MultifieldParser(['title', 'publisher'], vix.schema).parse(vquery)
+        vresults = s.search(query2, limit=None)
         cprint('Element found: ' + str(len(vresults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
-        for element in vresults:
-            print(form(str(count) + '.', 'red'), 'score = ', element.score)
-            cprint(element['author'], 'lightblue', start='\t', end='')
-            cprint(element['title'], 'yellow')
-            print('-' * 40)
-            count += 1
+        vlist = [{'score': el.score, 'ven': el.items()} for el in vresults]
+
+    from Ranking.Threshold import threshold_rank as tr
+
+    for element in tr(plist, vlist):
+        print('element = ', element)
