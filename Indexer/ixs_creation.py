@@ -11,7 +11,7 @@ from Support.TextFormat import cprint
 
 
 class Index:
-    """Due to this class is called in the main file, the path begins to the main directory """
+    """since this class is called in the main file, the path begins to the main directory """
     index_main_dir = 'indexdir/'
     pub_index_path = 'indexdir/PubIndex'
     ven_index_path = 'indexdir/VenIndex'
