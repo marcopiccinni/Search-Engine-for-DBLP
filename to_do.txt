@@ -14,7 +14,7 @@ TO DO LIST:
 
 	-Menu' di scelta
 
-
+    -Cambiare gli ee (sono indirizzi relativi, metterli assoluti)
 
 
 
