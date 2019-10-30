@@ -17,8 +17,7 @@ def to_whoosh_query(string):
         # If it isn't exactly in ones, query goes in both.
         pub_list.append('(' + q + ')')
         ven_list.append('(' + q + ')')
-    return pub_list, ven_list
-    # return ' OR '.join(pub_list), ' OR '.join(ven_list)
+    return ' OR '.join(pub_list), ' OR '.join(ven_list)
 
 
 def _find_query(string):
