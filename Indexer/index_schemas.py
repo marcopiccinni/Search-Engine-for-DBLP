@@ -14,7 +14,7 @@ def create_schemas():
         author=TEXT(stored=True, sortable=True),
         title=TEXT(stored=True),
         pages=STORED,
-        year=TEXT(sortable=True),
+        year=TEXT(sortable=True, stored=True),
         journal=TEXT(stored=True, sortable=True),
         volume=STORED,
         number=STORED,
@@ -32,7 +32,7 @@ def create_schemas():
         publisher=TEXT(stored=True, sortable=True),
         url=STORED,
         ee=STORED,
-        year=TEXT(sortable=True),
+        year=TEXT(sortable=True, stored=True),
     )
 
     return pub_schema, ven_schema

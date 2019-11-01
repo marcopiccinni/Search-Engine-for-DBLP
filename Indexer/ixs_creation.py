@@ -45,16 +45,16 @@ class Index:
         parser.parse(self.db_path)
 
         if 'Pub' in index_path:
-            cprint('Pubs commit started', 'green')
+            cprint('Pubs commit started', 'green', end='')
         else:
-            cprint('Venues commit started', 'lightblue')
+            cprint('Venues commit started', 'lightblue', end='')
 
         writer.commit()
 
         if 'Pub' in index_path:
-            cprint('Pubs commit ended', 'green')
+            cprint('Pubs commit ended', 'green', end='')
         else:
-            cprint('Venues commit ended', 'lightblue')
+            cprint('Venues commit ended', 'lightblue', end='')
 
     def create_ixs(self):
         start = time.time()
