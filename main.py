@@ -25,8 +25,8 @@ if __name__ == "__main__":
         # "" search for phrase in which the maximum distance between each word is 1
         # '' if you have to include characters in a term that are normally threated specially by the parsers, such
         #   as spaces, colons, or brackets.
-        pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], pix.schema).parse(
-            pquery)  # termclass=FuzzyTerm)
+        pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], pix.schema).parse(pquery)
+        # termclass=FuzzyTerm)
         presults = ps.search(pquery, limit=2)
 
         cprint('Element found[pub]: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
