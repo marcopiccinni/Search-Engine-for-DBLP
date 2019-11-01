@@ -16,13 +16,13 @@ def _p_element(pub, ven_list):
             else:
                 pub['score'] = pub['score'] + ven['score']
             pub['ven'] = {'title': ven['ven']['title'],
-                            'publisher': ven['ven']['publisher'],
-                            'author': ven['ven']['author'].split('\n'),
-                            'year': ven['ven']['year'],
-                            'journal': ven['ven']['journal'],
-                            'url': ven['ven']['url'],
-                            'ee': ven['ven']['ee'],
-                            }
+                          'publisher': ven['ven']['publisher'],
+                          'author': ven['ven']['author'],
+                          'year': ven['ven']['year'],
+                          'journal': ven['ven']['journal'],
+                          'url': ven['ven']['url'],
+                          'ee': ven['ven']['ee'],
+                          }
             pub['selected'] = 1
             return pub
 
@@ -46,7 +46,7 @@ def _v_element(ven, pub_list):
             else:
                 ven['score'] = ven['score'] + pub['score']
             ven['pub'] = {'title': pub['pub']['title'],
-                          'authors': pub['pub']['author'].split('\n'),
+                          'author': pub['pub']['author'],
                           'ee': pub['pub']['ee'],
                           'url': pub['pub']['url'],
                           'year': pub['pub']['year'],
@@ -54,7 +54,7 @@ def _v_element(ven, pub_list):
                           'volume': pub['pub']['volume'],
                           'number': pub['pub']['number'],
                           'pages': pub['pub']['pages'],
-                          },
+                          }
 
             ven['selected'] = 1
             return ven

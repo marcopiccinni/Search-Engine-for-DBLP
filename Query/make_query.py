@@ -1,4 +1,5 @@
 from Query.uquery import to_whoosh_query
+from Query.print_query import q_print
 from whoosh.qparser import MultifieldParser
 from Indexer.ix_functions import check_ixs
 from Support.TextFormat import cprint
@@ -39,11 +40,9 @@ def make_query(result_limit):
                 tmp['ven'][attr[0]] = attr[1]
             vlist.append(tmp)
 
-
     count = 0
     for element in tr(plist, vlist):
         if count == result_limit:
             return
-
-        cprint(element, 'yellow', start=str(count+1) + ') ')
+        q_print(element, count + 1)
         count += 1
