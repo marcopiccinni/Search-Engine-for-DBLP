@@ -17,7 +17,7 @@ class TextCode:
     CYAN = '\33[36m'
     LIGHTGREY = '\33[37m'
     # Secondary line color
-    DARKGREY = '\33[90m'
+    GREY = '\33[90m'
     PINK = '\33[91m'
     LIGHTGREEN = '\33[92m'
     YELLOW = '\33[93m'

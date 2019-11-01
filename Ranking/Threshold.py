@@ -3,26 +3,23 @@ from Support.TextFormat import cprint
 
 def _p_element(pub, ven_list):
     pub['ven'] = None
-
-    for venue in ven_list:
+    for ven in ven_list:
         cprint(pub['pub']['key'], 'red', start='\t')
-        if pub['pub']['crossref'] == venue['ven']['key']:
-            pub['score'] = pub['score'] + venue['score']
-            pub['venue'] = {'title': venue['title'],
-                            'publisher': venue['publisher'],
-                            'author': venue['author'].split('\n'),
-                            'year': venue['year'],
-                            'journal': venue['journal'],
-                            'url': venue['url'],
-                            'ee': venue['ee'],
+        if not pub['pub']['crossref'] == '' and (pub['pub']['crossref'].replace('\n', '') == ven['ven']['key']):
+            pub['score'] = pub['score'] + ven['score']
+            pub['venue'] = {'title': ven['title'],
+                            'publisher': ven['publisher'],
+                            'author': ven['author'].split('\n'),
+                            'year': ven['year'],
+                            'journal': ven['journal'],
+                            'url': ven['url'],
+                            'ee': ven['ee'],
                             }
             break
-
     return pub
 
 
 def _v_element(ven, pub_list):
-
     try:
         if ven['pub'] is not None:
             return ven
@@ -30,7 +27,7 @@ def _v_element(ven, pub_list):
         ven['pub'] = None
 
     for pub in pub_list:
-        if ven['ven']['crossref'] == pub['ven']['key']:
+        if not pub['pub']['crossref'] == '' and (pub['pub']['crossref'].replace('\n', '') == ven['ven']['key']):
             ven['score'] = ven['score'] + pub['score']
             ven['pub'] = {'title': pub['title'],
                           'authors': pub['author'].split('\n'),
@@ -43,7 +40,6 @@ def _v_element(ven, pub_list):
                           'pages': pub['pages'],
                           },
             break
-
     return ven
 
 
