@@ -8,6 +8,7 @@ from os.path import abspath
 def check_open_ixs():
     pix = index.open_dir('indexdir/PubIndex')
     vix = index.open_dir('indexdir/VenIndex')
+    print('Indexes ok!')
     return pix, vix
 
 
