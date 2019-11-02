@@ -1,16 +1,18 @@
 from Query.uquery import to_whoosh_query
 from Query.print_query import q_print
-from whoosh.qparser import MultifieldParser
+from whoosh.qparser import MultifieldParser, QueryParser, SimpleParser
 from Indexer.ix_functions import check_ixs
 from Support.TextFormat import cprint
 from Ranking.Threshold import threshold_rank as tr
+
+from whoosh.scoring import Frequency
 
 
 def make_query(result_limit):
     pix, vix = check_ixs()
 
     pquery, vquery = to_whoosh_query('Genetic')
-
+    psquery = pquery[:]
     with pix.searcher() as ps:
         # "" search for phrase in which the maximum distance between each word is 1
         # '' if you have to include characters in a term that are normally threated specially by the parsers, such
@@ -18,7 +20,25 @@ def make_query(result_limit):
         pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], pix.schema).parse(pquery)
         # termclass=FuzzyTerm)
 
-        presults = ps.search(pquery, limit=None)
+        presults = ps.search(pquery, limit=5, )
+        for el in presults:
+            print(el.score, el)
+    print('--------------Freq')
+
+    with pix.searcher(weighting=Frequency) as ps:
+        # "" search for phrase in which the maximum distance between each word is 1
+        # '' if you have to include characters in a term that are normally threated specially by the parsers, such
+        #   as spaces, colons, or brackets.
+
+        pquery = QueryParser('title', pix.schema).parse(psquery)
+        print(pquery)
+        presults = ps.search(pquery, limit=5, )
+        for el in presults:
+            print(el.score, el)
+        # termclass=FuzzyTerm)
+
+        import os
+        os.abort()
 
         cprint('Publications found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
         plist = []
