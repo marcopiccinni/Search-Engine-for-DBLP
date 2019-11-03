@@ -4,16 +4,17 @@ from os.path import abspath
 from Support.TextFormat import cprint, form
 
 
-def check_open_ixs():
+def check_open_ixs(silent=False):
     pix = index.open_dir('indexdir/PubIndex')
     vix = index.open_dir('indexdir/VenIndex')
-    print('Indexes ok!')
+    if not silent:
+        print('Indexes ok!')
     return pix, vix
 
 
-def check_ixs():
+def check_ixs(silent=False):
     try:
-        return check_open_ixs()
+        return check_open_ixs(silent=silent)
     except:
         while True:
             cprint('Indexes not found. Search Engine needs to create them.', 'orange', 'bold')
