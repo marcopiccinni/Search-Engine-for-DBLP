@@ -1,8 +1,7 @@
 from Query.uquery import to_whoosh_query
 from Query.print_query import q_print
-from whoosh.qparser import MultifieldParser, QueryParser, SimpleParser
+from whoosh.qparser import MultifieldParser, QueryParser
 from Indexer.ix_functions import check_ixs
-from Support.TextFormat import cprint
 from Ranking.Threshold import threshold_rank as tr
 from Support.TextFormat import cprint, form
 
@@ -20,8 +19,15 @@ class MakeQuery:
         plist = sorted(plist, key=lambda s: s['score'], reverse=True)
         vlist = sorted(vlist, key=lambda s: s['score'], reverse=True)
 
+        if len(plist) == 0:
+            results = vlist
+        elif len(vlist) == 0:
+            results = plist
+        else:
+            results = tr(plist, vlist)
+
         count = 0
-        for element in tr(plist, vlist):
+        for element in results:
             if count == limit:
                 return
             q_print(element, count + 1)
@@ -66,10 +72,9 @@ class MakeQuery:
 
     def frequency(self, result_limit):
         pquery, vquery = to_whoosh_query(self.__ask_query())
-        print(pquery)
         pquery = pquery.split(' OR ')
-        vquery=vquery.split(' OR ')
-        print(pquery)
+        vquery = vquery.split(' OR ')
+
         pix, vix = check_ixs(silent=True)
 
         # ----------- PUBLICATIONS ----------------------
@@ -79,13 +84,21 @@ class MakeQuery:
             #   as spaces, colons, or brackets.
             presults = None
             for pq in pquery:
-                pquery = QueryParser('title', pix.schema).parse(pq)
-                print(pq)
+                pq_parse = QueryParser('title', pix.schema).parse(pq)
+
                 if presults is not None:
-                    tresult = ps.search(pquery, limit=5, )
+                    tresult = ps.search(pq_parse, limit=None, )
                     presults.upgrade_and_extend(tresult)
                 else:
-                    presults = ps.search(pquery, limit=5, )
+                    presults = ps.search(pq_parse, limit=None, )
+
+                if not pq.startswith(('title', 'author', 'year'), ):
+                    pq_parse = QueryParser('author', pix.schema).parse(pq)
+                    tresult = ps.search(pq_parse, limit=None, )
+                    presults.upgrade_and_extend(tresult)
+                    pq_parse = QueryParser('year', pix.schema).parse(pq)
+                    tresult = ps.search(pq_parse, limit=None, )
+                    presults.upgrade_and_extend(tresult)
 
             cprint('Publications found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
             plist = []
@@ -96,9 +109,20 @@ class MakeQuery:
                 plist.append(tmp)
 
         # --------------- VENUES --------------------------
-        with vix.searcher() as vs:
-            vquery = MultifieldParser(['title', 'publisher'], vix.schema).parse(vquery)
-            vresults = vs.search(vquery, limit=None)
+        vresults = None
+        with vix.searcher(weighting=Frequency) as vs:
+            for vq in vquery:
+                vq_parse = QueryParser(['title'], vix.schema).parse(vq)
+                if vresults is not None:
+                    tresult = vs.search(vq_parse, limit=None)
+                    vresults.upgrade_and_extend(tresult)
+                else:
+                    vresults = vs.search(vq_parse, limit=None)
+
+                if not vq.startswith(('title:', 'publisher'), ):
+                    vq_parse = QueryParser(['publisher'], vix.schema).parse(vq)
+                    tresult = vs.search(vq_parse, limit=None)
+                    vresults.upgrade_and_extend(tresult)
 
             cprint('Venues found: ' + str(len(vresults)), 'bold', 'lightgrey', 'url', start='\t', end='\n')
             vlist = []
@@ -108,4 +132,4 @@ class MakeQuery:
                     tmp['ven'][attr[0]] = attr[1]
                 vlist.append(tmp)
 
-            self.__results(plist, list(), limit=result_limit)
+        self.__results(plist, vlist, limit=result_limit)
