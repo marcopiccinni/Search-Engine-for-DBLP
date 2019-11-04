@@ -8,7 +8,7 @@ def check_open_ixs(silent=False):
     pix = index.open_dir('indexdir/PubIndex')
     vix = index.open_dir('indexdir/VenIndex')
     if not silent:
-        print('Indexes ok!')
+        print('\tIndexes ok!\n')
     return pix, vix
 
 

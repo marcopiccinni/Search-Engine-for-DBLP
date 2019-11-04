@@ -38,7 +38,7 @@ class Rank:
             q_print(element, count + 1)
             count += 1
 
-    def vector(self, result_limit, fuzzy=False):
+    def vector(self, result_limit, fuzzy):
         """ Used to get the rilevant documents. This ranking method use the default whoosh ranking method.
             If you want to use fuzzy search of the query terms set fuzzy=True"""
         pquery, vquery = to_whoosh_query(self.__ask_query())  # Get the query used in whoosh
@@ -81,7 +81,7 @@ class Rank:
                 vlist.append(tmp)
         self.__results(plist, vlist, result_limit)  # Call the function to print the results.
 
-    def frequency(self, result_limit, fuzzy=False):
+    def frequency(self, result_limit, fuzzy):
         """ Used to get the rilevant documents using the frequency of the searched terms in the document.
             If you want to use fuzzy search of the query terms set fuzzy=True"""
 
