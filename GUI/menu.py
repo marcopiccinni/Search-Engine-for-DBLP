@@ -5,12 +5,14 @@ from Query.make_query import MakeQuery
 
 class Menu:
     __result_limit = 10
-    __ranking = 'frequency'  # 'default'  #
+    __ranking = 'frequency'  #'default'  #
     last_selected = 0
+    __fuzzy = True
 
     def reset(self):
         self.__result_limit = 10
         self.__ranking = 'default'
+        self.__fuzzy = False
 
     def __print_options(self):
         cprint('Options:', 'url')
@@ -33,11 +35,11 @@ class Menu:
             self.last_selected = input(form('Type your choice:\n>\t'))
             if self.last_selected == '1':
                 if self.__ranking == 'frequency':
-                    MakeQuery.frequency(MakeQuery(), self.__result_limit)
+                    MakeQuery.frequency(MakeQuery(), self.__result_limit, self.__fuzzy)
                 else:
-                    MakeQuery.vettoriale(MakeQuery(), self.__result_limit)
+                    MakeQuery.vettoriale(MakeQuery(), self.__result_limit, self.__fuzzy)
                 # stampa
-            elif self.last_selected == '2':
+            elif self.last_selected == '2': 
                 pass
             elif self.last_selected == '3':
                 pass
