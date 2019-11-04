@@ -9,13 +9,18 @@ from whoosh.scoring import Frequency
 
 
 class Rank:
-    """ Class used to get the rilevant documents and print it."""
+    """ Class used to get the rilevant documents and print it.
+        It support two different ranking methods: Vector(default choice) or Frequency.
+        It is possible to choice to search for similarity in the user query (default is False)."""
+
     @staticmethod
     def __ask_query():
+        """ Get the user query to convert it in the whoosh supported query language."""
         return input(form('What do you want to search?\n>\t'))
 
     @staticmethod
     def __results(plist, vlist, limit):
+        """ Used at the end of the ranking function to mix the two indexes results and show only the relevants ones."""
         plist = sorted(plist, key=lambda s: s['score'], reverse=True)
         vlist = sorted(vlist, key=lambda s: s['score'], reverse=True)
 
@@ -34,21 +39,22 @@ class Rank:
             count += 1
 
     def vector(self, result_limit, fuzzy=False):
-        pquery, vquery = to_whoosh_query(self.__ask_query())
-        pix, vix = check_ixs(silent=True)
+        """ Used to get the rilevant documents. This ranking method use the default whoosh ranking method.
+            If you want to use fuzzy search of the query terms set fuzzy=True"""
+        pquery, vquery = to_whoosh_query(self.__ask_query())  # Get the query used in whoosh
+        pix, vix = check_ixs(silent=True)  # Get the two indexes
 
         # ----------- PUBLICATIONS ----------------------
         with pix.searcher() as ps:
             # "" search for phrase in which the maximum distance between each word is 1
             # '' if you have to include characters in a term that are normally threated specially by the parsers, such
             #   as spaces, colons, or brackets.
-
             if fuzzy:
-                pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], pix.schema, termclass=FuzzyTerm).parse(pquery)
+                pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], pix.schema,
+                                          termclass=FuzzyTerm).parse(pquery)
             else:
                 pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], pix.schema).parse(pquery)
-
-            presults = ps.search(pquery, limit=5, )
+            presults = ps.search(pquery, limit=None)
 
             cprint('Publications found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n')
             plist = []
@@ -64,8 +70,6 @@ class Rank:
                 vquery = MultifieldParser(['title', 'publisher'], vix.schema, termclass=FuzzyTerm).parse(vquery)
             else:
                 vquery = MultifieldParser(['title', 'publisher'], vix.schema).parse(vquery)
-
-
             vresults = vs.search(vquery, limit=None)
 
             cprint('Venues found: ' + str(len(vresults)), 'bold', 'lightgrey', 'url', start='\t', end='\n')
@@ -75,15 +79,17 @@ class Rank:
                 for attr in el.items():
                     tmp['ven'][attr[0]] = attr[1]
                 vlist.append(tmp)
-
-        self.__results(plist, vlist, result_limit)
+        self.__results(plist, vlist, result_limit)  # Call the function to print the results.
 
     def frequency(self, result_limit, fuzzy=False):
-        pquery, vquery = to_whoosh_query(self.__ask_query())
+        """ Used to get the rilevant documents using the frequency of the searched terms in the document.
+            If you want to use fuzzy search of the query terms set fuzzy=True"""
+
+        pquery, vquery = to_whoosh_query(self.__ask_query())  # Get the query used in whoosh
+        # Whoosh Frequency doesn't support the OR query, so it will be splitted to merge later.
         pquery = pquery.split(' OR ')
         vquery = vquery.split(' OR ')
-
-        pix, vix = check_ixs(silent=True)
+        pix, vix = check_ixs(silent=True)  # Get the two indexes
 
         # ----------- PUBLICATIONS ----------------------
         with pix.searcher(weighting=Frequency) as ps:
@@ -157,5 +163,4 @@ class Rank:
                     tmp['ven'][attr[0]] = attr[1]
                 vlist.append(tmp)
 
-        self.__results(plist, vlist, limit=result_limit)
-
+        self.__results(plist, vlist, limit=result_limit)  # Call the function to print the results.

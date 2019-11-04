@@ -1,7 +1,7 @@
-from Support.TextFormat import cprint
-
-
 def _p_element(pub, ven_list):
+    """ Search a correspondence for the current publication document in the venues list.
+        If it founds ones the score is changed."""
+
     # if it has already found a match
     if pub['ven'] is not '':
         return pub
@@ -25,11 +25,15 @@ def _p_element(pub, ven_list):
                           }
             pub['selected'] = 1
             return pub
-
     return pub
 
 
 def _v_element(ven, pub_list):
+    """ Search a correspondence for the current venue document in the publications list.
+        If it founds ones the score is changed.
+        To give an higher relevance to the publications, the publication key is assigned to the object key
+        (if there is a match) """
+
     # if it has already found a match
     if ven['pub'] is not '':
         return ven
@@ -55,17 +59,19 @@ def _v_element(ven, pub_list):
                           'number': pub['pub']['number'],
                           'pages': pub['pub']['pages'],
                           }
-
             ven['selected'] = 1
             return ven
-
     ven['key'] = ven['ven']['key']
     return ven
 
 
 def threshold_rank(publications, venues):
-    doc_limit = min(len(publications), len(venues))
+    """ Implementation of Threshold alghorithm to merge the two indexes results and modify the resultant score.
+        The function search for a correspondence between publications crossref attribute and the venue key, giving more
+        relevance to the publications.
+        """
 
+    doc_limit = min(len(publications), len(venues))
     # cprint(doc_limit, 'lightgrey', start='doc_limit: ') # tracing
 
     list_results = list()
@@ -82,6 +88,5 @@ def threshold_rank(publications, venues):
         ordered_list = sorted(list_results, key=lambda s: s['score'], reverse=True)
         if ordered_list[0]['score'] > threshold:
             break
-    ordered_list = {x['key']: x for x in ordered_list}.values()
-
-    return ordered_list
+    # ordered_list = {x['key']: x for x in ordered_list}.values()
+    return {x['key']: x for x in ordered_list}.values()  # return the relevant documents list, filtering by object key.
