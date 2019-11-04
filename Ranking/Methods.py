@@ -8,8 +8,8 @@ from whoosh.query import FuzzyTerm
 from whoosh.scoring import Frequency
 
 
-class MakeQuery:
-
+class Rank:
+    """ Class used to get the rilevant documents and print it."""
     @staticmethod
     def __ask_query():
         return input(form('What do you want to search?\n>\t'))
@@ -33,7 +33,7 @@ class MakeQuery:
             q_print(element, count + 1)
             count += 1
 
-    def vettoriale(self, result_limit, fuzzy=False):
+    def vector(self, result_limit, fuzzy=False):
         pquery, vquery = to_whoosh_query(self.__ask_query())
         pix, vix = check_ixs(silent=True)
 

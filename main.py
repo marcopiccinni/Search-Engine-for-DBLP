@@ -1,4 +1,3 @@
-
 from Support.TextArt import welcome_text, menu_text
 from GUI.menu import Menu
 

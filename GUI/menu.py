@@ -1,6 +1,6 @@
 from Indexer.ix_functions import check_ixs
 from Support.TextFormat import cprint, form
-from Query.make_query import MakeQuery
+from Ranking.Methods import Rank
 
 
 class Menu:
@@ -35,9 +35,9 @@ class Menu:
             self.last_selected = input(form('Type your choice:\n>\t'))
             if self.last_selected == '1':
                 if self.__ranking == 'frequency':
-                    MakeQuery.frequency(MakeQuery(), self.__result_limit, self.__fuzzy)
+                    Rank.frequency(Rank(), self.__result_limit, self.__fuzzy)
                 else:
-                    MakeQuery.vettoriale(MakeQuery(), self.__result_limit, self.__fuzzy)
+                    Rank.vector(Rank(), self.__result_limit, self.__fuzzy)
                 # stampa
             elif self.last_selected == '2': 
                 pass
