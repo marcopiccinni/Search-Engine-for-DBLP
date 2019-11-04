@@ -5,7 +5,7 @@ from Query.make_query import MakeQuery
 
 class Menu:
     __result_limit = 10
-    __ranking = 'frequency'  # 'default'
+    __ranking = 'default'  # 'frequency'  #
     last_selected = 0
 
     def reset(self):
