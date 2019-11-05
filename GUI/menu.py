@@ -6,79 +6,100 @@ from Ranking.Methods import Rank
 class Menu:
     __result_limit = 10
     __ranking = 'vector'
-    __last_selected = 0
     __fuzzy = False
-    __options_list = [('1. ', 'Ranking.'), ('2. ', 'Limits.'), ('3. ', 'Fuzzyterm.')]
-    __ranking_list = [('1. ', 'Vector model.'),
-                      ('2. ', 'Frequency model.'), ]
+    __last_selected = 0
+    __output_level = 2
     __choices_list = [('1. ', 'Make a search.'),
                       ('2. ', 'Change settings.'),
                       ('3. ', 'Print active settings.'),
                       ('4. ', 'Exit.'),
                       ]
+    __options_list = [('1. ', 'Ranking.'),
+                      ('2. ', 'Limits.'),
+                      ('3. ', 'Fuzzyterm.'),
+                      ('4. ', 'Output level.'),
+                      ('5. ', 'Reset settings.'),
+                      ]
+    __ranking_list = [('1. ', 'Vector model.'),
+                      ('2. ', 'Frequency model.'),
+                      ]
+    __level_list = [('1. ', 'Essential output.'),
+                    ('2. ', 'Default output.'),
+                    ('3. ', 'Complete output.'),
+                    ]
 
-    def reset(self):
-        self.__result_limit = 10
-        self.__ranking = 'vector'
-        self.__fuzzy = False
-
-    def __print_options(self):
-        cprint('Options:', 'url')
-        print(form('Output limit: '), form(self.__result_limit))
-        print(form('Ranking: '), form(self.__ranking))
+    __colornumber = ('lightgreen', 'bold',)
+    __colortext = ('lightgreen',)
+    __colorinput = ('purple', 'bold',)
 
     def start(self):
         check_ixs()
-        __choices_list = [('1. ', 'Make a search.'),
-                          ('2. ', 'Change settings.'),
-                          ('3. ', 'Print active settings.'),
-                          ('4. ', 'Exit.'),
-                          ]
         while True:
-            cprint('MAIN MENU\n', 'green', 'bold', 'url', start='\t')
-
+            cprint('MAIN MENU\n', 'green', 'bold', 'url', start='\n\t')
             for choice in self.__choices_list:
-                print(form(choice[0], 'blue', 'bold'), form(choice[1], 'lightgreen'))
+                print(form(choice[0], *self.__colornumber), form(choice[1], *self.__colortext))
+            self.__last_selected = input(form('\nType your choice:\n>\t', *self.__colorinput))
 
-            self.__last_selected = input(form('\nType your choice:\n>\t', 'purple', 'bold'))
+            # ----------- Search ---------------------
             if self.__last_selected == '1':
                 if self.__ranking == 'frequency':
-                    Rank.frequency(Rank(), self.__result_limit, self.__fuzzy)
+                    Rank.frequency(Rank(), self.__result_limit, self.__fuzzy,self.__output_level)
                 else:
-                    Rank.vector(Rank(), self.__result_limit, self.__fuzzy)
+                    Rank.vector(Rank(), self.__result_limit, self.__fuzzy,self.__output_level)
 
+            # ------------ Settings ---------------------
             elif self.__last_selected == '2':
                 for option in self.__options_list:
-                    print(form(option[0], 'lightgreen', 'bold'), form(option[1], 'lightgreen'))
-                c = input(form('\nWhich options do you want to edit?\n>\t', 'purple', 'bold'))
+                    print(form(option[0], *self.__colornumber), form(option[1], *self.__colortext))
+                c = input(form('\nWhich options do you want to edit?\n>\t', *self.__colorinput))
                 if c == '1':
                     for rank in self.__ranking_list:
-                        print(form(rank[0], 'lightgreen', 'bold'), form(rank[1], 'lightgreen'))
-                    c = input(form('\nWhich options do you want to choose?\n>\t', 'purple', 'bold'))
+                        print(form(rank[0], *self.__colornumber), form(rank[1], *self.__colortext))
+                    c = input(form('\nWhich options do you want to choose?\n>\t', *self.__colorinput))
                     if c == '2':
                         self.__ranking = 'frequency'
                     else:
                         self.__ranking = 'vector'
                 elif c == '2':
-                    limit = input(form('\nHow many results do you want to print?\n>\t', 'purple', 'bold'))
+                    limit = input(form('\nHow many results do you want to print?\n>\t', *self.__colorinput))
                     self.__result_limit = int(limit)
                 elif c == '3':
                     print('Fuzzyterm: ', self.__fuzzy)
-                    c = input(form('\nDo you want to change it? [y/n]\n>\t', 'purple', 'bold'))
+                    c = input(form('\nDo you want to change it? [y/n]\n>\t', *self.__colorinput))
                     if c == 'y':
-                        if self.__fuzzy:
-                            self.__fuzzy = False
-                        else:
-                            self.__fuzzy = True
+                        self.__fuzzy = not self.__fuzzy
+                elif c == '4':
+                    for level in self.__level_list:
+                        print(form(level[0], *self.__colornumber), form(level[1], *self.__colortext))
+                    c = input(form('\nWhich options do you want to choose?\n>\t', *self.__colorinput))
+                    if c in [x[0].replace('. ', '') for x in self.__level_list]:
+                        self.__output_level = int(c)
+                elif c == '5':
+                    self.reset()
 
+            # ------- Print Settings ----------------------
             elif self.__last_selected == '3':
-                cprint('Options: ', 'pink', start='\n')
-                cprint(self.__ranking, 'pink', start=form('\tRanking: ', 'pink'))
-                cprint(self.__result_limit, 'pink', start=form('\tResults limit: ', 'pink'))
-                cprint(self.__fuzzy, 'pink', start=form('\tFuzzy: ', 'pink'), end='\n\n')
-
+                o_color_key = ('pink', 'bold',)
+                o_color_value = ('pink', 'italic',)
+                cprint('Options: ', *o_color_key, start='\n')
+                print('\t{}{}'.format(form('Ranking: ', *o_color_key),
+                                      form(self.__ranking, *o_color_value)))
+                print('\t{}{}'.format(form('Results limit: ', *o_color_key),
+                                      form(self.__result_limit, *o_color_value)))
+                print('\t{}{}'.format(form('Fuzzy: ', *o_color_key),
+                                      form(self.__fuzzy, *o_color_value)))
+                print('\t{}{}'.format(form('Output level: ', *o_color_key),
+                                      form(self.__output_level, *o_color_value)))
+                print()
+            # --------- Exit -------------------------
             elif self.__last_selected == '4':
                 return
 
             else:
                 cprint('Ritenta, sarai più fortunato.', 'orange', 'bold', 'url', start='\t', end='\n\n')
+
+    def reset(self):
+        self.__result_limit = 10
+        self.__ranking = 'vector'
+        self.__fuzzy = False
+        self.__output_level = 2

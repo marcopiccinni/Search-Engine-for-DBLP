@@ -19,7 +19,7 @@ class Rank:
         return input(form('What do you want to search?\n>\t'))
 
     @staticmethod
-    def __results(plist, vlist, limit):
+    def __results(plist, vlist, output_level, limit):
         """ Used at the end of the ranking function to mix the two indexes results and show only the relevants ones."""
         plist = sorted(plist, key=lambda s: s['score'], reverse=True)
         vlist = sorted(vlist, key=lambda s: s['score'], reverse=True)
@@ -31,14 +31,15 @@ class Rank:
         else:
             results = tr(plist, vlist)
 
+        cprint('Results:', 'yellow', 'bold', 'url', start='\n\t', end='\n\n')
         count = 0
         for element in results:
             if count == limit:
                 return
-            q_print(element, count + 1)
+            q_print(element, count + 1,output_level)
             count += 1
 
-    def vector(self, result_limit, fuzzy):
+    def vector(self, result_limit, fuzzy, output_level):
         """ Used to get the rilevant documents. This ranking method use the default whoosh ranking method.
             If you want to use fuzzy search of the query terms set fuzzy=True"""
         pquery, vquery = to_whoosh_query(self.__ask_query())  # Get the query used in whoosh
@@ -79,9 +80,9 @@ class Rank:
                 for attr in el.items():
                     tmp['ven'][attr[0]] = attr[1]
                 vlist.append(tmp)
-        self.__results(plist, vlist, result_limit)  # Call the function to print the results.
+        self.__results(plist, vlist, output_level, limit=result_limit)  # Call the function to print the results.
 
-    def frequency(self, result_limit, fuzzy):
+    def frequency(self, result_limit, fuzzy, output_level):
         """ Used to get the rilevant documents using the frequency of the searched terms in the document.
             If you want to use fuzzy search of the query terms set fuzzy=True"""
 
@@ -163,4 +164,4 @@ class Rank:
                     tmp['ven'][attr[0]] = attr[1]
                 vlist.append(tmp)
 
-        self.__results(plist, vlist, limit=result_limit)  # Call the function to print the results.
+        self.__results(plist, vlist, output_level, limit=result_limit)  # Call the function to print the results.

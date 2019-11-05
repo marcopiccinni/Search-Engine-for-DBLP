@@ -17,6 +17,7 @@ def _p_element(pub, ven_list):
                 pub['score'] = pub['score'] + ven['score']
             pub['ven'] = {'title': ven['ven']['title'],
                           'publisher': ven['ven']['publisher'],
+                          'pubtype': ven['ven']['pubtype'],
                           'author': ven['ven']['author'],
                           'year': ven['ven']['year'],
                           'journal': ven['ven']['journal'],
@@ -51,6 +52,7 @@ def _v_element(ven, pub_list):
                 ven['score'] = ven['score'] + pub['score']
             ven['pub'] = {'title': pub['pub']['title'],
                           'author': pub['pub']['author'],
+                          'pubtype':pub['pub']['pubtype'],
                           'ee': pub['pub']['ee'],
                           'url': pub['pub']['url'],
                           'year': pub['pub']['year'],

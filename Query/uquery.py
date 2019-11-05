@@ -1,4 +1,3 @@
-from Support.TextFormat import cprint
 from itertools import product
 from Parser.parser import publication
 
@@ -6,6 +5,7 @@ from Parser.parser import publication
 def to_whoosh_query(string):
     """ Used to transform the user query in the whoosh query language.
         Return the two string for the whoosh parser (publication and venue respectly)."""
+
     q_list = _find_query(string)
     pub_list = []
     ven_list = []
@@ -48,6 +48,7 @@ def _find_query(string):
 
 def _is_publication(string, list):
     """ Return True and updates the publication_list if a query is well formatted for the publication index."""
+
     s = ''
     # First check if the first word is a publication type. it could ends with a . or a : .
     if string.startswith(
@@ -71,6 +72,7 @@ def _is_publication(string, list):
 
 def _is_venue(string, list):
     """ Return True and updates the venue_list if a query is well formatted for the venue_index."""
+
     if string.startswith(('venue.', 'venue:'), ):
         if string[5] == ':':
             list.append('(' + string[6:] + ')')
