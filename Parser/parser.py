@@ -25,9 +25,9 @@ class PublicationHandler(xml.sax.ContentHandler):
     volume = ''
     number = ''
 
-    # -----------
-    __CurrentElement = None
+    # ----------- # TODO: Need a comment here?
     writer = None
+    __CurrentElement = None
 
     def __init__(self, writer):
         self.__reset()
@@ -36,6 +36,7 @@ class PublicationHandler(xml.sax.ContentHandler):
 
     def __reset(self):
         """A function for resetting the class attributes"""
+
         self.isPublication = False
         self.key = ''
         self.tag = ''
@@ -52,14 +53,17 @@ class PublicationHandler(xml.sax.ContentHandler):
 
     def startDocument(self):
         """Called when the XML Parser starts reading the file"""
+
         cprint('Publication indexing started.', 'green')
 
     def endDocument(self):
         """Called when the parsing is completed"""
+
         cprint('Publication parsing completed.', 'green')
 
     def startElement(self, tag, attributes):
         """Called when a publication is parsed"""
+
         self.__CurrentElement = tag
         for element_tag in publication:
             if tag == element_tag:
@@ -69,6 +73,7 @@ class PublicationHandler(xml.sax.ContentHandler):
 
     def endElement(self, tag):
         """Called when the parsing of the publication ends"""
+
         if self.tag == tag:
             self.writer.add_document(pubtype=self.tag,
                                      key=self.key,
@@ -87,6 +92,7 @@ class PublicationHandler(xml.sax.ContentHandler):
 
     def characters(self, content):
         """Called to assign the attributes of a publication document"""
+
         if self.isPublication:
             if self.__CurrentElement == 'author':
                 self.author += str(content)
@@ -113,8 +119,7 @@ class PublicationHandler(xml.sax.ContentHandler):
 class VenueHandler(xml.sax.ContentHandler):
     """Class for handle parsing events and adding documents to the venue index"""
 
-    # variable that defines a venue document
-    isVenue = False
+    isVenue = False  # variable that defines a venue document
 
     # attributes list
     key = ''
@@ -128,9 +133,10 @@ class VenueHandler(xml.sax.ContentHandler):
     ee = ''
     parent = False
 
-    # -----------
-    __CurrentElement = None
+    # ----------- # TODO: Need a comment here?
     writer = None
+    __CurrentElement = None
+
 
     def __init__(self, writer):
         self.__reset(3)
@@ -162,14 +168,17 @@ class VenueHandler(xml.sax.ContentHandler):
 
     def startDocument(self):
         """Called when the XML Parser starts reading the file"""
+
         cprint('Venue indexing started.', 'lightblue', end='')
 
     def endDocument(self):
         """Called when the parsing is completed"""
+
         cprint('Venue indexing completed.', 'lightblue', end='')
 
     def startElement(self, tag, attributes):
         """Called when a venue is parsed"""
+         # TODO: Why here is break?
         self.__CurrentElement = tag
         if tag in venue:
             for element_tag in venue:
@@ -187,6 +196,8 @@ class VenueHandler(xml.sax.ContentHandler):
 
     def endElement(self, tag):
         """Called when the parsing of the venue ends"""
+
+        # TODO: Why here is break?
         if tag in venue:
             for element_tag in venue:
                 if tag == element_tag:
@@ -213,6 +224,7 @@ class VenueHandler(xml.sax.ContentHandler):
 
     def characters(self, content):
         """Called to assign the attributes of a venue document"""
+
         if self.isVenue:
             if self.__CurrentElement == "author":
                 self.author += str(content)
