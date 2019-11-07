@@ -29,8 +29,8 @@ class Index:
             'Perfectly balanced as everything should be'."""
 
         nproc = round(cpu_count() / 2)  # round for the case in which we have just 1 proc
-        percentage_mem = 85 / 100
-        available_mem = virtual_memory().available / 1024 ** 2 / 2  # in MB
+        percentage_mem = 80 / 100
+        available_mem = virtual_memory().available / 1024 ** 2 / 2 # in MB
         limitmb = round(available_mem / nproc * percentage_mem)
 
         return {'procs': nproc, 'limitmb': limitmb, 'multisegment': True}
@@ -45,16 +45,16 @@ class Index:
         parser.parse(self.db_path)
 
         if 'Pub' in index_path:
-            cprint('Pubs commit started', 'green', end='')
+            cprint('Pubs commit started', 'green')
         else:
-            cprint('Venues commit started', 'lightblue', end='')
+            cprint('Venues commit started.', 'lightcyan')
 
         writer.commit()
 
         if 'Pub' in index_path:
-            cprint('Pubs commit ended', 'green', end='')
+            cprint('Pubs commit ended.', 'green')
         else:
-            cprint('Venues commit ended', 'lightblue', end='')
+            cprint('Venues commit ended.', 'lightcyan')
 
     def create_ixs(self):
         start = time.time()

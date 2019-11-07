@@ -1,5 +1,5 @@
 import xml.sax
-from Support.TextFormat import cprint
+from Support.TextFormat import form
 
 publication = ['article', 'incollection', 'phdthesis', 'mastersthesis', 'inproceedings']
 venue = ['book', 'proceedings']
@@ -54,12 +54,12 @@ class PublicationHandler(xml.sax.ContentHandler):
     def startDocument(self):
         """Called when the XML Parser starts reading the file"""
 
-        cprint('Publication indexing started.', 'green')
+        print(form('Publication indexing started.', 'green'), flush=True)
 
     def endDocument(self):
         """Called when the parsing is completed"""
 
-        cprint('Publication parsing completed.', 'green')
+        print(form('Publication parsing completed.', 'green'), flush=True)
 
     def startElement(self, tag, attributes):
         """Called when a publication is parsed"""
@@ -131,55 +131,49 @@ class VenueHandler(xml.sax.ContentHandler):
     year = ''
     url = ''
     ee = ''
+    isbn = ''
     parent = False
 
     # ----------- # TODO: Need a comment here?
     writer = None
     __CurrentElement = None
 
-
     def __init__(self, writer):
-        self.__reset(3)
+        self.__reset()
         self.writer = writer
         super(VenueHandler, self).__init__()  # parent init
 
-    def __reset(self, selector):
-        """A function for resetting the class attributes.
-            Selector is used for the bitwise and:
-            1 to use first condition
-            2 to use second condition
-            3 to use both of them"""
+    def __reset(self):
+        """A function for resetting the class attributes."""
 
         self.key = ''
         self.tag = ''
-
-        if selector & 1:
-            self.isVenue = False
-            self.author = ''
-            self.title = ''
-            self.publisher = ''
-            self.year = ''
-            self.ee = ''
-            self.url = ''
-
-        if selector & 2:
-            self.journal = ''
-            self.parent = False
+        self.isVenue = False
+        self.author = ''
+        self.title = ''
+        self.publisher = ''
+        self.year = ''
+        self.ee = ''
+        self.url = ''
+        self.isbn = ''
+        self.journal = ''
+        self.parent = False
 
     def startDocument(self):
         """Called when the XML Parser starts reading the file"""
 
-        cprint('Venue indexing started.', 'lightblue', end='')
+        print(form('Venue indexing started.', 'lightcyan'), flush=True)
 
     def endDocument(self):
         """Called when the parsing is completed"""
 
-        cprint('Venue indexing completed.', 'lightblue', end='')
+        print(form('Venue indexing completed.', 'lightcyan'), flush=True)
 
     def startElement(self, tag, attributes):
         """Called when a venue is parsed"""
-         # TODO: Why here is break?
+
         self.__CurrentElement = tag
+
         if tag in venue:
             for element_tag in venue:
                 if tag == element_tag:
@@ -187,18 +181,11 @@ class VenueHandler(xml.sax.ContentHandler):
                     self.key = str(attributes['key'])
                     self.tag = tag
 
-        elif tag in publication:
-            for element_tag in publication:
-                if tag == element_tag:
-                    self.parent = True
-                    self.key = str(attributes['key'])
-                    self.tag = tag
-
     def endElement(self, tag):
         """Called when the parsing of the venue ends"""
 
-        # TODO: Why here is break?
         if tag in venue:
+
             for element_tag in venue:
                 if tag == element_tag:
                     self.writer.add_document(pubtype=self.tag,
@@ -210,17 +197,9 @@ class VenueHandler(xml.sax.ContentHandler):
                                              url=self.url,
                                              year=self.year,
                                              journal=self.journal,
+                                             isbn=self.isbn,
                                              )
-                    self.__reset(1)
-
-        if tag in publication:
-            for element_tag in publication:
-                if tag == element_tag:
-                    self.writer.add_document(pubtype=self.tag,
-                                             key=self.key,
-                                             journal=self.journal
-                                             )
-                    self.__reset(2)
+                    self.__reset()
 
     def characters(self, content):
         """Called to assign the attributes of a venue document"""
@@ -232,12 +211,94 @@ class VenueHandler(xml.sax.ContentHandler):
                 self.title += str(content)
             elif self.__CurrentElement == "publisher":
                 self.publisher += str(content)
-            elif self.parent:
-                if self.__CurrentElement == 'journal':
-                    self.journal += content
+            # elif self.parent:
+            elif self.__CurrentElement == 'journal':
+                self.journal += content
             elif self.__CurrentElement == "ee":
                 self.ee += str(content)
             elif self.__CurrentElement == "url":
                 self.url += str(content)
             elif self.__CurrentElement == "year":
                 self.year += str(content)
+            elif self.__CurrentElement == "isbn":
+                self.isbn += str(content)
+
+
+if __name__ == '__main__':
+    from Indexer.index_schemas import create_schemas
+    from whoosh.index import create_in
+    import xml.sax
+    import os
+    import time
+    from shutil import rmtree
+    from multiprocessing import Process, cpu_count
+    from psutil import virtual_memory
+    from Support.TextFormat import cprint
+
+
+    def __resources():
+        """a function that returns kwargs for the index writer.
+            We divided nproc and avaible_mem by 2 because we want to parallelize the indexing process.
+            Indeed we create two index for the two types of documents so, the use of the resurces must be splitted for
+            these two process.
+            'Perfectly balanced as everything should be'."""
+
+        nproc = round(cpu_count())  # round for the case in which we have just 1 proc
+        percentage_mem = 70 / 100
+        available_mem = virtual_memory().available / 1024 ** 2   # in MB
+        limitmb = round(available_mem / nproc * percentage_mem)
+
+        return {'procs': nproc, 'limitmb': limitmb, 'multisegment': True}
+
+
+    def __indexing(handler, schema, parser, index_path):
+        """a function that handles the index creation"""
+
+        # ** returns dictionary as parameters
+        writer = create_in(index_path, schema).writer(**__resources())
+
+        parser.setContentHandler(handler(writer))
+        parser.parse(db_path)
+
+        if 'Pub' in index_path:
+            cprint('Pubs commit started', 'green')
+        else:
+            cprint('Venues commit started.', 'lightblue')
+
+        writer.commit()
+
+        if 'Pub' in index_path:
+            cprint('Pubs commit ended.', 'green')
+        else:
+            cprint('Venues commit ended.', 'lightblue')
+
+
+    index_main_dir = 'indexdir/'
+    pub_index_path = 'indexdir/PubIndex'
+    ven_index_path = 'indexdir/VenIndex'
+    db_path = 'db/dblp.xml'
+
+    start = time.time()
+
+    pub_schema, ven_schema = create_schemas()
+
+    if os.path.exists(index_main_dir):
+        rmtree(index_main_dir)
+
+    os.makedirs(index_main_dir)
+    os.makedirs(pub_index_path)
+    os.makedirs(ven_index_path)
+
+    parser = xml.sax.make_parser()
+    parser.setFeature(xml.sax.handler.feature_namespaces, 0)
+
+    # PUB
+    __indexing(PublicationHandler, pub_schema, parser, pub_index_path)
+    # VENUE
+    __indexing(VenueHandler, ven_schema, parser, ven_index_path)
+    # t2 = Process(target=__indexing, args=(VenueHandler, ven_schema, parser, ven_index_path,))
+    # t2.start()
+    #
+    # t2.join()
+    end = time.time()
+    print('Total time: ', round((end - start) / 60), ' minutes')

@@ -10,44 +10,30 @@ def create_schemas():
 
     pub_schema = Schema(
         pubtype=TEXT(stored=True),
-        key=ID(stored=True),
-        # TODO: key: STORED? campo non per ricerca
-        author=TEXT(stored=True, sortable=True),
-        # TODO: author: Rimuovere sortable perchè non utilizzato
-        title=TEXT(stored=True),
+        key=STORED,
+        author=TEXT(stored=True, phrase=True),
+        title=TEXT(stored=True, phrase=True),
         pages=STORED,
-        year=TEXT(sortable=True, stored=True),
-        # TODO: year: Rimuovere sortable perchè non utilizzato.
-        journal=TEXT(stored=True, sortable=True),
-        # TODO: journal: Rimuovere sortable perchè non utilizzato.
-        #                Solo STORED perchè campo non per ricerca.
+        year=TEXT(stored=True),
+        journal=STORED,
         volume=STORED,
         number=STORED,
         url=STORED,
         ee=STORED,
-        crossref=TEXT(stored=True)
-        # TODO: crossref: Solo STORED perchè campo non per ricerca
+        crossref=STORED
     )
 
     ven_schema = Schema(
-        pubtype=TEXT(stored=True),
-        # TODO: pubtype: STORED? a differenza di "Pub" non è usato in ricerca
-        key=ID(stored=True),
-        # TODO: key: Solo STORED perchè campo non per ricerca
-        author=TEXT(stored=True, sortable=True),
-        # TODO: author: Rimuovere sortable perchè non utilizzato.
-        #               Solo STORED perchè campo non per ricerca
+        pubtype=STORED,
+        key=STORED,
+        author=STORED,
         title=TEXT(stored=True),
-        journal=TEXT(stored=True, sortable=True),
-        # TODO: journal: Rimuovere sortable perchè non utilizzato.
-        #                Solo STORED perchè campo non per ricerca
-        publisher=TEXT(stored=True, sortable=True),
-        # TODO: publisher: Rimuovere sortable perchè non utilizzato.
+        journal=STORED,
+        publisher=TEXT(stored=True),
         url=STORED,
         ee=STORED,
-        year=TEXT(sortable=True, stored=True),
-        # TODO: year: Rimuovere sortable perchè non utilizzato.
-        #             Solo STORED perchè campo non per ricerca
+        year=STORED,
+        isbn=STORED,
     )
 
     return pub_schema, ven_schema

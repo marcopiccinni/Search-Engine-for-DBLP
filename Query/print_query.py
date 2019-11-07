@@ -4,8 +4,8 @@ from Support.TextFormat import cprint, form
 def q_print(element, count, level):
     """ This function provide the documents output to the user."""
 
-    title = ('bold',)
-    argument = ('italic',)
+    title = ('bold', 'lightgrey')
+    argument = ('italic', 'lightgrey')
 
     cprint(str(count) + ')\t\t' + 'score: ' + str(round(element['score'], 5)), end='')
 
@@ -21,7 +21,7 @@ def q_print(element, count, level):
             print('\t\t{}{}'.format(form('Title: ', *title),
                                     form(element['pub']['title'], *argument)),
                   end='')
-            if element['ven']['title'].endswith('\n') is False:
+            if element['pub']['title'].endswith('\n') is False:
                 print()
         # author    level 1
         if element['pub']['author'] != '':
@@ -62,7 +62,7 @@ def q_print(element, count, level):
         if element['pub']['ee'] != '':
             ee = element['pub']['ee'].split('\n')
             print('\t\t{}{}'.format(form('Alternative link: ', *title),
-                                    form('\n\t\t\t\t\t\t  '.join(ee[:len(ee) - 1])), *argument))
+                                    form('\n\t\t\t\t\t\t  '.join(ee[:len(ee) - 1]), *argument)))
 
     # ------- Venue -----------------
     if not element['ven'] == '':
@@ -90,6 +90,11 @@ def q_print(element, count, level):
             authors = element['ven']['author'].split('\n')
             print('\t\t{}{}'.format(form('Author: ', *title),
                                     form(', '.join(authors[:len(authors) - 1]), *argument)))
+        # isbn      level 2
+        if element['ven']['isbn'] != '' and level >= 2:
+            ee = element['ven']['isbn']
+            print('\t\t{}{}'.format(form('ISBN: ', *title),
+                                    form(element['ven']['isbn'], *argument)))
         # journal   level 3
         if element['ven']['journal'] != '' and level >= 3:
             print('\t\t{}{}'.format(form('Journal: ', *title),
@@ -109,6 +114,6 @@ def q_print(element, count, level):
         if element['ven']['ee'] != '' and level >= 3:
             ee = element['ven']['ee'].split('\n')
             print('\t\t{}{}'.format(form('Alternative link: ', *title),
-                                    form('\n\t\t\t\t\t\t  '.join(ee[:len(ee) - 1])), *argument))
+                                    form('\n\t\t\t\t\t\t  '.join(ee[:len(ee) - 1]), *argument)))
 
     print()

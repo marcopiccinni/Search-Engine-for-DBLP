@@ -1,0 +1,12 @@
+data  DUMP XML: 6/11/19
+peso XML: 2.7 GB
+
+tempo indicizzazione sequenziale: 14m
+tempo indicizzazione parallela: 22m
+
+Publications count: 4749027 // PAR
+Venues count: 60125
+
+
+Pub index: 3 GB ~ 3,1 GB
+Ven index: 36,6 MB ~ 38,8 MB

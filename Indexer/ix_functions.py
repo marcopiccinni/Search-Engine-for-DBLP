@@ -7,8 +7,11 @@ from Support.TextFormat import cprint, form
 def check_open_ixs(silent=False):
     pix = index.open_dir('indexdir/PubIndex')
     vix = index.open_dir('indexdir/VenIndex')
+
     if not silent:
-        print('\tIndexes ok!\n')
+        print('\tIndexes ok!')
+        print('Publications count: ' + str(pix.doc_count()))
+        print('Venues count: ' + str(vix.doc_count()))
     return pix, vix
 
 
