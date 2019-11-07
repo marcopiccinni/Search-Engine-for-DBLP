@@ -19,7 +19,7 @@ python3 main.py
 ```
 If there isn't the index directory, the program ask you to create indexes giving it the dblp file path.
 It is possile to download the required compressed file using [this link](https://dblp.uni-trier.de/xml/dblp.xml.gz), and after unpack it.
-Otherwise it is possible to use these indexes generated with the dblp dump (2019-11-06): [Mega](https://mega.nz/#!Nd4BWYpD!7Az-4w0w6mx_81e2uschCdUWFb8QQJYIhJqiS1i8ZyM)
+Otherwise it is possible to use these indexes generated with the dblp dump (2019-11-06): [Mega](https://mega.nz/#!8IwCDQSa!PzntlBqB10LuACPAPVHRD1-bICRazJZU5ko0GNZ1kKU)
 
 ##### SEARCH MODE LANGUAGE
 	The following mini language is supported by the query resolver:
