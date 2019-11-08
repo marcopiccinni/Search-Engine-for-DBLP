@@ -25,7 +25,6 @@ class PublicationHandler(xml.sax.ContentHandler):
     volume = ''
     number = ''
 
-    # ----------- # TODO: Need a comment here?
     writer = None
     __CurrentElement = None
 
@@ -134,7 +133,6 @@ class VenueHandler(xml.sax.ContentHandler):
     isbn = ''
     parent = False
 
-    # ----------- # TODO: Need a comment here?
     writer = None
     __CurrentElement = None
 
@@ -231,7 +229,7 @@ if __name__ == '__main__':
     import os
     import time
     from shutil import rmtree
-    from multiprocessing import Process, cpu_count
+    from multiprocessing import cpu_count
     from psutil import virtual_memory
     from Support.TextFormat import cprint
 

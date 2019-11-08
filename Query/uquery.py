@@ -21,9 +21,8 @@ def to_whoosh_query(string):
 
 
 def _find_query(string):
-    """ Used to obtain the single user queries.
-        The query user format is: -----
-        """
+    """ Used to obtain the single user queries.        """
+
     words = [x for x in string.split(' ')]  # Split single words by spaces.
     c = True
     while c:  # Regroup the phrases with " .
@@ -37,12 +36,11 @@ def _find_query(string):
                 words.remove(w)
                 c = True
                 continue
-            # to regroup words that is search term but spaces separeted
+            # to regroup words that are search terms but spaces separeted. es. publication: computer
             if words[words.index(w) - 1].endswith(':'):
                 words[words.index(w) - 1] += words[words.index(w)]
                 words.remove(w)
                 c = True
-
     return words
 
 
@@ -52,7 +50,7 @@ def _is_publication(string, list):
     s = ''
     # First check if the first word is a publication type. it could ends with a . or a : .
     if string.startswith(
-            tuple([str(x[0] + x[1]) for x in product(publication + ['inproc', 'publication', ], (':', '.'))])):
+            tuple([str(x[0] + x[1]) for x in product(publication + ['publication', ], (':', '.'))])):
         # In this case an attribute is specified.
         if string.count('.'):
             s += string[string.index('.') + 1:]
@@ -78,16 +76,14 @@ def _is_venue(string, list):
             list.append('(' + string[6:] + ')')
         elif string.startswith(('title:', 'publisher:'), 6):
             list.append('(' + string[string.index('.') + 1:] + ')')
-        else:
-            # ERROR
-            return True
+        # ERROR Term is discarded
         return True
     return False
 
 
 if __name__ == '__main__':
     string = 'article.author: "Marco Piccinni" publication.title: "Questo è un test" article:"Computer science" ' \
-             'venue:prova "Sembra davvero funzionare" sembra'
+             'venue:prova "Sembra davvero funzionare" '
     pub_query, ven_query = to_whoosh_query(string)
     print('[p] ', pub_query)
     print('[v] ', ven_query)

@@ -107,3 +107,4 @@ venv.bak/
 .idea/
 */dblp.xml
 indexdir/
+*.zip
