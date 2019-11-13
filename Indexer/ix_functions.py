@@ -10,8 +10,8 @@ def check_open_ixs(silent=False):
 
     if not silent:
         print('\tIndexes ok!')
-        print('Publications count: ' + str(pix.doc_count()))
-        print('Venues count: ' + str(vix.doc_count()))
+        print('\tPublications count: ' + str(pix.doc_count()))
+        print('\tVenues count: ' + str(vix.doc_count()))
     return pix, vix
 
 

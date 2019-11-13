@@ -16,7 +16,7 @@ class Rank:
     @staticmethod
     def __ask_query():
         """ Get the user query to convert it in the whoosh supported query language."""
-        return input(form('What do you want to search?\n>\t'))
+        return input(form('What do you want to search?\n>  '))
 
     @staticmethod
     def __results(plist, vlist, output_level, limit):
