@@ -2,7 +2,7 @@ from whoosh.fields import *
 
 
 def create_schemas():
-    # TEXT: the file is indexed, analyzed. By default it is not stored.
+    # TEXT: the field is indexed, analyzed. By default it is not stored.
     #   phrase=False does not allow to search for phrases.
     #   sortable=True  allows to sort the indexed values
     # ID: the file is indexed, without being analyzed.
@@ -11,8 +11,8 @@ def create_schemas():
     pub_schema = Schema(
         pubtype=TEXT(stored=True),
         key=STORED,
-        author=TEXT(stored=True, phrase=True),
-        title=TEXT(stored=True, phrase=True),
+        author=TEXT(stored=True),
+        title=TEXT(stored=True),
         pages=STORED,
         year=TEXT(stored=True),
         journal=STORED,

@@ -15,6 +15,7 @@ def _p_element(pub, ven_list):
                 pub['score'] = ven['score']
             else:
                 pub['score'] = pub['score'] + ven['score']
+
             pub['ven'] = {'title': ven['ven']['title'],
                           'publisher': ven['ven']['publisher'],
                           'pubtype': ven['ven']['pubtype'],
@@ -23,7 +24,9 @@ def _p_element(pub, ven_list):
                           'journal': ven['ven']['journal'],
                           'url': ven['ven']['url'],
                           'ee': ven['ven']['ee'],
+                          'isbn': ven['ven']['isbn']
                           }
+
             pub['selected'] = 1
             return pub
     return pub

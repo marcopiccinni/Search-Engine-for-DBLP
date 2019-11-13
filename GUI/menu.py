@@ -38,7 +38,7 @@ class Menu:
             cprint('MAIN MENU\n', 'green', 'bold', 'url', start='\n\t')
             for choice in self.__choices_list:
                 print(form(choice[0], *self.__colornumber), form(choice[1], *self.__colortext))
-            self.__last_selected = input(form('\nType your choice:\n>\t', *self.__colorinput))
+            self.__last_selected = input(form('\nType your choice:\n>  ', *self.__colorinput))
 
             # ----------- Search ---------------------
             if self.__last_selected == '1':
@@ -51,27 +51,27 @@ class Menu:
             elif self.__last_selected == '2':
                 for option in self.__options_list:
                     print(form(option[0], *self.__colornumber), form(option[1], *self.__colortext))
-                c = input(form('\nWhich options do you want to edit?\n>\t', *self.__colorinput))
+                c = input(form('\nWhich options do you want to edit?\n>  ', *self.__colorinput))
                 if c == '1':
                     for rank in self.__ranking_list:
                         print(form(rank[0], *self.__colornumber), form(rank[1], *self.__colortext))
-                    c = input(form('\nWhich options do you want to choose?\n>\t', *self.__colorinput))
+                    c = input(form('\nWhich options do you want to choose?\n>  ', *self.__colorinput))
                     if c == '2':
                         self.__ranking = 'frequency'
                     else:
                         self.__ranking = 'vector'
                 elif c == '2':
-                    limit = input(form('\nHow many results do you want to print?\n>\t', *self.__colorinput))
+                    limit = input(form('\nHow many results do you want to print?\n>  ', *self.__colorinput))
                     self.__result_limit = int(limit)
                 elif c == '3':
                     print('Fuzzyterm: ', self.__fuzzy)
-                    c = input(form('\nDo you want to change it? [y/n]\n>\t', *self.__colorinput))
+                    c = input(form('\nDo you want to change it? [y/n]\n>  ', *self.__colorinput))
                     if c == 'y':
                         self.__fuzzy = not self.__fuzzy
                 elif c == '4':
                     for level in self.__level_list:
                         print(form(level[0], *self.__colornumber), form(level[1], *self.__colortext))
-                    c = input(form('\nWhich options do you want to choose?\n>\t', *self.__colorinput))
+                    c = input(form('\nWhich options do you want to choose?\n>  ', *self.__colorinput))
                     if c in [x[0].replace('. ', '') for x in self.__level_list]:
                         self.__output_level = int(c)
                 elif c == '5':
