@@ -1,66 +1,11 @@
-TODO:
-    - try except nella funzione di query parsing -> se errore MAIN MENU
+#TODO
 
-----------------------------------------------------------------------------------
-DONE:
-	-Programmare il Parser SAX
+Creare due funzioni:
+	- subito dopo threshold: se due oggetti hanno la stessa venue, devono diventare un oggetto unico che ha come score: V + P1 + P2 + .. + Pn {Originali}
+	 + salvarsi score originali
 
-	-Configurare Whoosh:
-		-Schema
-		-Indici
+	 lato venue bisogna cercare i crossref
 
-	-Controllare i campi da aggiungere nella configurazione del parser SAX
+	 key, crossref da indicizzare (non a disposizione vista utente)
 
-	-Parser xmltodict vs SAX vs marco
-
-
-	-Definire struttura query
-	    - trasformare userQuery in WhooshQuery (nltk?)
-
-
-	-Scelta dei 2 metodi di ranking(almeno)
-		possibilita':
-			-a spazio vettoriale implementato da whoosh
-			-fazzy (booleano migliorato) -> frequency
-
-	-Merge di risultati tra entrambi gli indici, e ranking
-
-	-Modularizzazione dei file
-
-	-Menu' di scelta
-
-    -Cambiare gli ee (sono indirizzi relativi, metterli assoluti)
-
-
-
-DOMANDE:
-    Suddivisione tra VENUE e PUBLICATIONS?
-        - <inproceedings> sembra vada tra i "Venue" ma non ha attributo PUBLISHER
-        - in "Venue" quindi rimarrebbero soltanto i <book> (unico che ha publisher)
-
-        - campi su cui indicizzare (in cui cercare) sono i seguenti?
-           # Author | Title | Year  -> Publication
-           # Title | Publisher      -> Venue
-
-    Importante utilizzare i "crossref"? Esempio da <inproceedings> verso <proceedings>
-        - Nel caso vanno mostrati/indicizzati/...
-
-    La ricerca tra più "search_element" (query da utente da spezzare) in OR o in AND?
-        - Cercare i documenti che rispondono affermativamente a tutti i "search_element" (AND)
-            o unire i risultati provenienti da ogni "search_element" (OR) ?
-
-
-
-
- POST-RICEVIMENTO:
- 	-inproceeding in Publication
- 	-proceeding in Venue
-
- 	journal attenzione perche' e' annidato
-
- 	controllare publisher rivista
-
- 	crossref serve per fare full outer join tra due query. Se cerco in pub ed in venue e trovo un articolo in una conferenza quando unisco i due risultati
- 	ci deve essere una riga unica invece che due righe dato che matchano
-
- 	gestire l'unione di due query in OR
+Cambiare venue proceedings in journal quando e' journal
