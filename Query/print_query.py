@@ -2,7 +2,7 @@ from Support.TextFormat import cprint, form
 
 main_obj = ('yellow', 'bold',)  # pub / venue
 alt_obj = ('yellow', 'italic',)  # less rilevant pub/venue (only 2 fields: title, year)
-score = ('lightcyan',)
+score = ('lightcyan', 'bold')
 title = ('bold', 'url', 'lightgrey')
 argument = ('italic', 'lightgrey')
 bash_space = '\n' + '\t' * 3 + ' ' * 2
@@ -71,8 +71,6 @@ def print_pub(pub, level):
             print(output_form.format(form('Alternative link', *title),
                                      form(bash_space.join(ee[:len(ee) - 1]), *argument)))
 
-        print()
-
 
 def print_venue(ven, level):
     """print the venue"""
@@ -116,17 +114,13 @@ def print_venue(ven, level):
         print(output_form.format(form('Alternative link', *title),
                                  form(bash_space.join(ee[:len(ee) - 1]), *argument)))
 
-    print()
-
 
 def print_alternative(alt):
     """print the others pubs contained in a given venue"""
 
-    cprint('Pubs Included', *alt_obj)
+    cprint('Pubs Included', *alt_obj, start='\t')
     for p in alt:
         cprint(p.strip(), *argument, start='\t- ')
-
-    print()
 
 
 def print_inven(inven, level):
@@ -139,20 +133,16 @@ def print_inven(inven, level):
     # year      level 2
     if inven['year'] != '':
         print(output_form.format(form('Year', *title),
-                                 form(inven['year'], *argument)),
-              end='')
+                                 form(inven['year'].strip(), *argument)))
     # url       level 3
     if inven['url'] != '' and level >= 3:
         print(output_form.format(form('Link', *title),
-                                 form('https://dblp.uni-trier.de/' + inven['url'], *argument)),
-              end='')
+                                 form('https://dblp.uni-trier.de/' + inven['url'].strip(), *argument)))
     # ee        level 3
     if inven['ee'] != '' and level >= 3:
         ee = inven['ee'].split('\n')
         print(output_form.format(form('Alternative link', *title),
                                  form(bash_space.join(ee[:len(ee) - 1]), *argument)))
-
-    print()
 
 
 def q_print(element, count, level):
@@ -160,22 +150,21 @@ def q_print(element, count, level):
 
     # - pub in venue --> score = pub.score
     if len(element['alternative']) == 0 and len(element['pub']):
-        # print('ERRRRROREE: ', element)
-        cprint(str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
-        cprint('Publication', *main_obj)
+        cprint(' '*2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
+        cprint('Publication', *main_obj, start='\t')
         print_pub(element['pub'], level)
 
         if len(element['ven']) and level >= 2:
-            cprint('In Venue', *alt_obj, start='\n')
+            cprint('In Venue', *alt_obj, start='\n\t')
             print_inven(element['ven'], level)
 
     # - venue con alternative --> score = venue.score
     elif len(element['pub']) == 0:
-        cprint(str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
+        cprint(' '*2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
         # ------- Venue -----------------
-        cprint('Venue', *main_obj)
+        cprint('Venue', *main_obj, start='\t')
         print_venue(element['ven'], level)
-        
+
         # alternative
         if len(element['alternative']) > 0 and level >= 3:
             print_alternative(element['alternative'])
@@ -186,15 +175,17 @@ def q_print(element, count, level):
         for x in element['pub']:
             s += x['o_score']
 
-        cprint(str(count) + ')\t' + 'score: ' + str(round(s, 5)), *score)
+        cprint(' '*2 + str(count) + ')\t' + 'score: ' + str(round(s, 5)), *score)
 
-        cprint('Venue', *main_obj)
+        cprint('Venue', *main_obj, start='\t')
         print_venue(element['ven'], level)
 
-        cprint('Relevant Publications', *main_obj)
+        cprint('Relevant Publications', *main_obj, start='\t')
         for pub in element['pub']:
             print_pub(pub, level)
 
         # alternative
         if len(element['alternative']) > 0 and level >= 3:
             print_alternative(element['alternative'])
+
+    print()
