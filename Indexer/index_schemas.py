@@ -2,9 +2,11 @@ from whoosh.fields import *
 
 
 def create_schemas():
+    """define the schema for the pubs and the venues"""
+
     # TEXT: the field is indexed, analyzed. By default it is not stored.
-    #   phrase=False does not allow to search for phrases.
-    #   sortable=True  allows to sort the indexed values
+    # phrase=False does not allow to search for phrases.
+    # sortable=True  allows to sort the indexed values
     # ID: the file is indexed, without being analyzed.
     # STORED: the file is saved but not indexed.
 
@@ -20,12 +22,12 @@ def create_schemas():
         number=STORED,
         url=STORED,
         ee=STORED,
-        crossref=STORED
+        crossref=ID(stored=True),
     )
 
     ven_schema = Schema(
         pubtype=STORED,
-        key=STORED,
+        key=ID(stored=True),
         author=STORED,
         title=TEXT(stored=True),
         journal=STORED,

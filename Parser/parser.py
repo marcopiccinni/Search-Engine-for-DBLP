@@ -27,6 +27,7 @@ class PublicationHandler(xml.sax.ContentHandler):
 
     writer = None
     __CurrentElement = None
+    __duplicate = set()
 
     def __init__(self, writer):
         self.__reset()
@@ -74,6 +75,25 @@ class PublicationHandler(xml.sax.ContentHandler):
         """Called when the parsing of the publication ends"""
 
         if self.tag == tag:
+            if self.crossref == '' and self.journal != '':
+                # removing all whitespace characters and adding a '/' to split fields
+                jkey = '/'.join((self.journal, self.year, self.volume, self.number)).replace(' ', '')
+                jkey = ''.join(jkey.split())
+
+                if jkey not in self.__duplicate:
+                    self.__duplicate.add(jkey)
+                    jee = self.ee.split('#')[0]
+                    jurl = self.url.split('#')[0]
+                    f = open('jl.txt', 'a')
+
+                    # all the journal from publications that are not in venue
+                    jour = '~'.join((jkey, self.journal, self.year,
+                                     self.volume, self.number, jurl, jee)).replace('\n', '') + '\n'
+                    f.write(jour)
+                    f.close()
+
+                self.crossref = jkey
+
             self.writer.add_document(pubtype=self.tag,
                                      key=self.key,
                                      author=self.author,
@@ -100,7 +120,7 @@ class PublicationHandler(xml.sax.ContentHandler):
             elif self.__CurrentElement == "pages":
                 self.pages += str(content)
             elif self.__CurrentElement == "crossref":
-                self.crossref += str(content)
+                self.crossref += str(content).split('\n')[0]
             elif self.__CurrentElement == "year":
                 self.year += str(content)
             elif self.__CurrentElement == "url":
@@ -220,83 +240,3 @@ class VenueHandler(xml.sax.ContentHandler):
                 self.year += str(content)
             elif self.__CurrentElement == "isbn":
                 self.isbn += str(content)
-
-
-if __name__ == '__main__':
-    from Indexer.index_schemas import create_schemas
-    from whoosh.index import create_in
-    import xml.sax
-    import os
-    import time
-    from shutil import rmtree
-    from multiprocessing import cpu_count
-    from psutil import virtual_memory
-    from Support.TextFormat import cprint
-
-
-    def __resources():
-        """a function that returns kwargs for the index writer.
-            We divided nproc and avaible_mem by 2 because we want to parallelize the indexing process.
-            Indeed we create two index for the two types of documents so, the use of the resurces must be splitted for
-            these two process.
-            'Perfectly balanced as everything should be'."""
-
-        nproc = round(cpu_count())  # round for the case in which we have just 1 proc
-        percentage_mem = 70 / 100
-        available_mem = virtual_memory().available / 1024 ** 2   # in MB
-        limitmb = round(available_mem / nproc * percentage_mem)
-
-        return {'procs': nproc, 'limitmb': limitmb, 'multisegment': True}
-
-
-    def __indexing(handler, schema, parser, index_path):
-        """a function that handles the index creation"""
-
-        # ** returns dictionary as parameters
-        writer = create_in(index_path, schema).writer(**__resources())
-
-        parser.setContentHandler(handler(writer))
-        parser.parse(db_path)
-
-        if 'Pub' in index_path:
-            cprint('Pubs commit started', 'green')
-        else:
-            cprint('Venues commit started.', 'lightblue')
-
-        writer.commit()
-
-        if 'Pub' in index_path:
-            cprint('Pubs commit ended.', 'green')
-        else:
-            cprint('Venues commit ended.', 'lightblue')
-
-
-    index_main_dir = 'indexdir/'
-    pub_index_path = 'indexdir/PubIndex'
-    ven_index_path = 'indexdir/VenIndex'
-    db_path = 'db/dblp.xml'
-
-    start = time.time()
-
-    pub_schema, ven_schema = create_schemas()
-
-    if os.path.exists(index_main_dir):
-        rmtree(index_main_dir)
-
-    os.makedirs(index_main_dir)
-    os.makedirs(pub_index_path)
-    os.makedirs(ven_index_path)
-
-    parser = xml.sax.make_parser()
-    parser.setFeature(xml.sax.handler.feature_namespaces, 0)
-
-    # PUB
-    __indexing(PublicationHandler, pub_schema, parser, pub_index_path)
-    # VENUE
-    __indexing(VenueHandler, ven_schema, parser, ven_index_path)
-    # t2 = Process(target=__indexing, args=(VenueHandler, ven_schema, parser, ven_index_path,))
-    # t2.start()
-    #
-    # t2.join()
-    end = time.time()
-    print('Total time: ', round((end - start) / 60), ' minutes')

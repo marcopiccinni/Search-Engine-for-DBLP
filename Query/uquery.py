@@ -79,11 +79,3 @@ def _is_venue(string, list):
         # ERROR Term is discarded
         return True
     return False
-
-
-if __name__ == '__main__':
-    string = 'article.author: "Marco Piccinni" publication.title: "Questo è un test" article:"Computer science" ' \
-             'venue:prova "Sembra davvero funzionare" '
-    pub_query, ven_query = to_whoosh_query(string)
-    print('[p] ', pub_query)
-    print('[v] ', ven_query)

@@ -77,6 +77,7 @@ def form(string, *args):
 
 def help():
     """Help function to now how to use it"""
+
     if not isANSIsupported():
         print('Your sistem may not be able to use ANSI format for text. '
               'Use only if you know what you are doing, or if the next lines are shown correctly.\n')
@@ -94,6 +95,7 @@ def help():
 def isANSIsupported():
     """Return True if the current running terminal allow ANSI format of the text,
     if it doesn't or it's not sure False is return"""
+
     import sys, os, platform
     for handle in [sys.stdout]:
         if (hasattr(handle, "isatty") and handle.isatty()) or \
@@ -103,9 +105,3 @@ def isANSIsupported():
             else:
                 return True
         return False
-
-
-if __name__ == "__main__":
-    # help()
-    print(str(form('text', 'green')))
-    print(str(form('text', 'lightgreen')))

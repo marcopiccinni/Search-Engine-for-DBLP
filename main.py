@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from Support.TextArt import welcome_text, menu_text
 from GUI.menu import Menu
 from Support.utils import clear

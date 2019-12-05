@@ -9,6 +9,7 @@ def _p_element(pub, ven_list):
     pub['key'] = pub['pub']['key']
 
     # given a publication search if his key is related to some venue by the field 'crossref'
+
     for ven in ven_list:
         if not pub['pub']['crossref'] == '' and pub['pub']['crossref'].replace('\n', '') == ven['ven']['key']:
             if ven['selected']:
@@ -16,17 +17,8 @@ def _p_element(pub, ven_list):
             else:
                 pub['score'] = pub['score'] + ven['score']
 
-            pub['ven'] = {'title': ven['ven']['title'],
-                          'publisher': ven['ven']['publisher'],
-                          'pubtype': ven['ven']['pubtype'],
-                          'author': ven['ven']['author'],
-                          'year': ven['ven']['year'],
-                          'journal': ven['ven']['journal'],
-                          'url': ven['ven']['url'],
-                          'ee': ven['ven']['ee'],
-                          'isbn': ven['ven']['isbn']
-                          }
-
+            pub['ven'] = ven['ven']
+            pub['ven']['score'] = ven['score']
             pub['selected'] = 1
             return pub
     return pub
@@ -39,7 +31,7 @@ def _v_element(ven, pub_list):
         (if there is a match) """
 
     # if it has already found a match
-    if ven['pub'] is not '':
+    if len(ven['pub']):
         return ven
 
     # given a venue search if his key is related to some publications by the field 'key'
@@ -53,17 +45,9 @@ def _v_element(ven, pub_list):
                 ven['score'] = pub['score']
             else:
                 ven['score'] = ven['score'] + pub['score']
-            ven['pub'] = {'title': pub['pub']['title'],
-                          'author': pub['pub']['author'],
-                          'pubtype':pub['pub']['pubtype'],
-                          'ee': pub['pub']['ee'],
-                          'url': pub['pub']['url'],
-                          'year': pub['pub']['year'],
-                          'journal': pub['pub']['journal'],
-                          'volume': pub['pub']['volume'],
-                          'number': pub['pub']['number'],
-                          'pages': pub['pub']['pages'],
-                          }
+
+            ven['pub'] = pub['pub']
+            ven['pub']['score'] = pub['score']
             ven['selected'] = 1
             return ven
     ven['key'] = ven['ven']['key']
@@ -94,4 +78,5 @@ def threshold_rank(publications, venues):
         if ordered_list[0]['score'] > threshold:
             break
     # ordered_list = {x['key']: x for x in ordered_list}.values()
-    return {x['key']: x for x in ordered_list}.values()  # return the relevant documents list, filtering by object key.
+
+    return list({x['key']: x for x in ordered_list}.values())  # return the relevant documents list, filtering by object key.

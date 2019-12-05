@@ -5,6 +5,8 @@ from Support.TextFormat import cprint, form
 
 
 def check_open_ixs(silent=False):
+    """a function that returns the indexes"""
+
     pix = index.open_dir('indexdir/PubIndex')
     vix = index.open_dir('indexdir/VenIndex')
 
@@ -16,6 +18,8 @@ def check_open_ixs(silent=False):
 
 
 def check_ixs(silent=False):
+    """check if indexes has been created"""
+
     try:
         return check_open_ixs(silent=silent)
     except:

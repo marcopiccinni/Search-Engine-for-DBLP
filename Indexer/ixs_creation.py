@@ -1,6 +1,6 @@
 from Parser.parser import PublicationHandler, VenueHandler
 from Indexer.index_schemas import create_schemas
-from whoosh.index import create_in
+from whoosh.index import create_in, open_dir
 import xml.sax
 import os
 import time
@@ -12,6 +12,7 @@ from Support.TextFormat import cprint
 
 class Index:
     """since this class is called in the main file, the path begins to the main directory """
+
     index_main_dir = 'indexdir/'
     pub_index_path = 'indexdir/PubIndex'
     ven_index_path = 'indexdir/VenIndex'
@@ -30,7 +31,7 @@ class Index:
 
         nproc = round(cpu_count() / 2)  # round for the case in which we have just 1 proc
         percentage_mem = 80 / 100
-        available_mem = virtual_memory().available / 1024 ** 2 / 2 # in MB
+        available_mem = virtual_memory().available / 1024 ** 2 / 2  # in MB
         limitmb = round(available_mem / nproc * percentage_mem)
 
         return {'procs': nproc, 'limitmb': limitmb, 'multisegment': True}
@@ -56,7 +57,37 @@ class Index:
         else:
             cprint('Venues commit ended.', 'lightcyan')
 
+    def __insert_journal(self):
+        """add journal into venue index"""
+
+        cprint('Journal commit started', 'pink')
+        vix = open_dir(self.ven_index_path)
+        writer = vix.writer()
+        print('\tVenues count without journal: ' + str(vix.doc_count()))
+        # writer.add_document(title=u"My document", content=u"This is my document!",
+        #                     path=u"/a", tags=u"first short", icon=u"/icons/star.png")
+        # f = open('jlist.txt', 'w')
+        with open('jl.txt', 'r') as f:
+            for line in f.readlines():
+                line = line.split('~')
+
+                writer.add_document(key=line[0],
+                                    pubtype='journal',
+                                    title=line[1],
+                                    year=line[2],
+                                    url=line[5],
+                                    ee=line[6],
+                                    author='',
+                                    publisher='',
+                                    isbn='', )
+        writer.commit()
+        print('\tVenues count with journal: ' + str(vix.doc_count()))
+        cprint('Journal commit ended', 'purple')
+        os.remove('jl.txt')
+
     def create_ixs(self):
+        """create the indexes"""
+
         start = time.time()
 
         pub_schema, ven_schema = create_schemas()
@@ -71,15 +102,26 @@ class Index:
         parser = xml.sax.make_parser()
         parser.setFeature(xml.sax.handler.feature_namespaces, 0)
 
-        # PUBLICATIONS
-        t1 = Process(target=self.__indexing, args=(PublicationHandler, pub_schema, parser, self.pub_index_path))
-        t1.start()
+        if os.path.exists('jl.txt'):
+            os.remove('jl.txt')
 
-        # VENUE
-        t2 = Process(target=self.__indexing, args=(VenueHandler, ven_schema, parser, self.ven_index_path, ))
-        t2.start()
+        # # PUBLICATIONS
+        # t1 = Process(target=self.__indexing, args=(PublicationHandler, pub_schema, parser, self.pub_index_path))
+        # t1.start()
+        #
+        # # VENUE
+        # t2 = Process(target=self.__indexing, args=(VenueHandler, ven_schema, parser, self.ven_index_path, ))
+        # t2.start()
+        #
+        # t1.join()
+        # t2.join()
 
-        t1.join()
-        t2.join()
+        self.__indexing(PublicationHandler, pub_schema, parser, self.pub_index_path)
+        self.__indexing(VenueHandler, ven_schema, parser, self.ven_index_path)
+
+        # print('sleeping for 1/2 minutes')
+        # time.sleep(30)
+        self.__insert_journal()
+
         end = time.time()
         print('Total time: ', round((end - start) / 60), ' minutes')

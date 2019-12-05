@@ -1,121 +1,200 @@
 from Support.TextFormat import cprint, form
 
+main_obj = ('yellow', 'bold',)  # pub / venue
+alt_obj = ('yellow', 'italic',)  # less rilevant pub/venue (only 2 fields: title, year)
+score = ('lightcyan',)
+title = ('bold', 'url', 'lightgrey')
+argument = ('italic', 'lightgrey')
+bash_space = '\n' + '\t' * 3 + ' ' * 2
+output_form = '\t' + '{}: {}'
+
+
+def print_pub(pub, level):
+    """print the pub(s)"""
+
+    # if pub is dict transform it to list
+    if isinstance(pub, dict):
+        tmp = list()
+        tmp.append(pub)
+        pub = tmp
+
+    for p in pub:
+        # pubtype   level 2
+        if level >= 2:
+            print(output_form.format(form('Type', *title),
+                                     form(p['pubtype'], *argument)))
+        # title     level 1
+        if p['title'] != '':
+            print(output_form.format(form('Title', *title),
+                                     form(p['title'], *argument)),
+                  end='')
+            if p['title'].endswith('\n') is False:
+                print()
+        # author    level 1
+        if p['author'] != '':
+            authors = p['author'].split('\n')
+            print(output_form.format(form('Author', *title),
+                                     form(', '.join(authors[:len(authors) - 1]), *argument)))
+        # year      level 2
+        if p['year'] != '' and level >= 2:
+            print(output_form.format(form('Year', *title),
+                                     form(p['year'], *argument)),
+                  end='')
+        # journal   level 2
+        if p['journal'] != '' and level >= 2:
+            print(output_form.format(form('Journal', *title),
+                                     form(p['journal'], *argument)),
+                  end='')
+        # volume    level 3
+        if p['volume'] != '' and level >= 3:
+            print(output_form.format(form('Volume', *title),
+                                     form(p['volume'], *argument)),
+                  end='')
+        # number    level 3
+        if p['number'] != '' and level >= 3:
+            print(output_form.format(form('Number', *title),
+                                     form(p['number'], *argument)),
+                  end='')
+        # pages     level 3
+        if p['pages'] != '' and level >= 3:
+            print(output_form.format(form('Pages', *title),
+                                     form(p['pages'], *argument)),
+                  end='')
+        # url       level 1
+        if p['url'] != '':
+            print(output_form.format(form('Link', *title),
+                                     form('https://dblp.uni-trier.de/' + p['url'], *argument)),
+                  end='')
+        # ee        level 1
+        if p['ee'] != '':
+            ee = p['ee'].split('\n')
+            print(output_form.format(form('Alternative link', *title),
+                                     form(bash_space.join(ee[:len(ee) - 1]), *argument)))
+
+        print()
+
+
+def print_venue(ven, level):
+    """print the venue"""
+
+    # pubtype   level 2
+    if ven['pubtype'] != '' and level >= 2:
+        print(output_form.format(form('Type', *title),
+                                 form(ven['pubtype'], *argument)))
+    # title     level 1
+    if ven['title'] != '':
+        print(output_form.format(form('Title', *title),
+                                 form(ven['title'].replace('\n', ''), *argument)))
+    # publisher level 1
+    if ven['publisher'] != '':
+        print(output_form.format(form('Publisher', *title),
+                                 form(ven['publisher'], *argument)),
+              end='')
+    # author    level 3
+    if ven['author'] != '' and level >= 3:
+        authors = ven['author'].split('\n')
+        print(output_form.format(form('Author', *title),
+                                 form(', '.join(authors[:len(authors) - 1]), *argument)))
+    # isbn      level 2
+    if ven['isbn'] != '' and level >= 2:
+        isbn = ven['isbn'].split('\n')
+        print(output_form.format(form('ISBN', *title),
+                                 form(', '.join(isbn[:len(isbn) - 1]), *argument)))
+    # year      level 3
+    if ven['year'] != '' and level >= 3:
+        print(output_form.format(form('Year', *title),
+                                 form(ven['year'], *argument)),
+              end='')
+    # url       level 2
+    if ven['url'] != '' and level >= 2:
+        print(output_form.format(form('Link', *title),
+                                 form('https://dblp.uni-trier.de/' + ven['url'], *argument)),
+              end='')
+    # ee        level 2
+    if ven['ee'] != '' and level >= 2:
+        ee = ven['ee'].split('\n')
+        print(output_form.format(form('Alternative link', *title),
+                                 form(bash_space.join(ee[:len(ee) - 1]), *argument)))
+
+    print()
+
+
+def print_alternative(alt):
+    """print the others pubs contained in a given venue"""
+
+    cprint('Pubs Included', *alt_obj)
+    for p in alt:
+        cprint(p.strip(), *argument, start='\t- ')
+
+    print()
+
+
+def print_inven(inven, level):
+    """print the venue in which the pub is contained"""
+
+    # title         level 2
+    if inven['title'] != '':
+        print(output_form.format(form('Title', *title),
+                                 form(inven['title'].strip(), *argument)))
+    # year      level 2
+    if inven['year'] != '':
+        print(output_form.format(form('Year', *title),
+                                 form(inven['year'], *argument)),
+              end='')
+    # url       level 3
+    if inven['url'] != '' and level >= 3:
+        print(output_form.format(form('Link', *title),
+                                 form('https://dblp.uni-trier.de/' + inven['url'], *argument)),
+              end='')
+    # ee        level 3
+    if inven['ee'] != '' and level >= 3:
+        ee = inven['ee'].split('\n')
+        print(output_form.format(form('Alternative link', *title),
+                                 form(bash_space.join(ee[:len(ee) - 1]), *argument)))
+
+    print()
+
 
 def q_print(element, count, level):
     """ This function provide the documents output to the user."""
 
-    title = ('bold', 'lightgrey')
-    argument = ('italic', 'lightgrey')
+    # - pub in venue --> score = pub.score
+    if len(element['alternative']) == 0 and len(element['pub']):
+        # print('ERRRRROREE: ', element)
+        cprint(str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
+        cprint('Publication', *main_obj)
+        print_pub(element['pub'], level)
 
-    bash_space = '\n' + '\t'*3 + ' ' *2
+        if len(element['ven']) and level >= 2:
+            cprint('In Venue', *alt_obj, start='\n')
+            print_inven(element['ven'], level)
 
-    cprint(str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), 'lightcyan', end='')
+    # - venue con alternative --> score = venue.score
+    elif len(element['pub']) == 0:
+        cprint(str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
+        # ------- Venue -----------------
+        cprint('Venue', *main_obj)
+        print_venue(element['ven'], level)
+        
+        # alternative
+        if len(element['alternative']) > 0 and level >= 3:
+            print_alternative(element['alternative'])
 
-    # ----------------- Publication ----------------
-    if not element['pub'] == '':
-        cprint('Publication', 'yellow', 'bold', start='\n')
-        # pubtype   level 2
-        if level >= 2:
-            print('\t{}{}'.format(form('Type: ', *title),
-                                    form(element['pub']['pubtype'], *argument)))
-        # title     level 1
-        if element['pub']['title'] != '':
-            print('\t{}{}'.format(form('Title: ', *title),
-                                    form(element['pub']['title'], *argument)),
-                  end='')
-            if element['pub']['title'].endswith('\n') is False:
-                print()
-        # author    level 1
-        if element['pub']['author'] != '':
-            authors = element['pub']['author'].split('\n')
-            print('\t{}{}'.format(form('Author: ', *title),
-                                    form(', '.join(authors[:len(authors) - 1]), *argument)))
-        # year      level 2
-        if element['pub']['year'] != '' and level >= 2:
-            print('\t{}{}'.format(form('Year: ', *title),
-                                    form(element['pub']['year'], *argument)),
-                  end='')
-        # journal   level 2
-        if element['pub']['journal'] != '' and level >= 2:
-            print('\t{}{}'.format(form('Journal: ', *title),
-                                    form(element['pub']['journal'], *argument)),
-                  end='')
-        # volume    level 3
-        if element['pub']['volume'] != '' and level >= 3:
-            print('\t{}{}'.format(form('Volume: ', *title),
-                                    form(element['pub']['volume'], *argument)),
-                  end='')
-        # number    level 3
-        if element['pub']['number'] != '' and level >= 3:
-            print('\t{}{}'.format(form('Number: ', *title),
-                                    form(element['pub']['number'], *argument)),
-                  end='')
-        # pages     level 3
-        if element['pub']['pages'] != '' and level >= 3:
-            print('\t{}{}'.format(form('Pages: ', *title),
-                                    form(element['pub']['pages'], *argument)),
-                  end='')
-        # url       level 1
-        if element['pub']['url'] != '':
-            print('\t{}{}'.format(form('Link: ', *title),
-                                    form('https://dblp.uni-trier.de/' + element['pub']['url'], *argument)),
-                  end='')
-        # ee        level 1
-        if element['pub']['ee'] != '':
-            ee = element['pub']['ee'].split('\n')
-            print('\t{}{}'.format(form('Alternative link: ', *title),
-                                    form(bash_space.join(ee[:len(ee) - 1]), *argument)))
+    # - venue con pubs e alternative --> score = original(venue.score + pubs.score)
+    else:
+        s = element['ven']['o_score']
+        for x in element['pub']:
+            s += x['o_score']
 
-    # ------- Venue -----------------
-    if not element['ven'] == '':
-        if element['pub'] == '':
-            print()
-        cprint('Venue', 'yellow', 'bold', start='')
+        cprint(str(count) + ')\t' + 'score: ' + str(round(s, 5)), *score)
 
-        # pubtype   level 2
-        if element['ven']['pubtype'] != '' and level >= 2:
-            print('\t{}{}'.format(form('Type: ', *title),
-                                    form(element['ven']['pubtype'], *argument)))
-        # title     level 1
-        if element['ven']['title'] != '':
-            print('\t{}{}'.format(form('Title: ', *title),
-                                    form(element['ven']['title'].replace('\n', ''), *argument)))
-            if element['ven']['title'].endswith('\n') is False:
-                print()
-        # publisher level 1
-        if element['ven']['publisher'] != '':
-            print('\t{}{}'.format(form('Publisher: ', *title),
-                                    form(element['ven']['publisher'], *argument)),
-                  end='')
-        # author    level 3
-        if element['ven']['author'] != '' and level >= 3:
-            authors = element['ven']['author'].split('\n')
-            print('\t{}{}'.format(form('Author: ', *title),
-                                    form(', '.join(authors[:len(authors) - 1]), *argument)))
-        # isbn      level 2
-        if element['ven']['isbn'] != '' and level >= 2:
-            isbn = element['ven']['isbn'].split('\n')
-            print('\t{}{}'.format(form('ISBN: ', *title),
-                                    form(', '.join(isbn[:len(isbn)-1]), *argument)))
-        # journal   level 3
-        if element['ven']['journal'] != '' and level >= 3:
-            print('\t{}{}'.format(form('Journal: ', *title),
-                                    form(element['ven']['journal'], *argument)),
-                  end='')
-        # year      level 3
-        if element['ven']['year'] != '' and level >= 3:
-            print('\t{}{}'.format(form('Year: ', *title),
-                                    form(element['ven']['year'], *argument)),
-                  end='')
-        # url       level 2
-        if element['ven']['url'] != '' and level >= 2:
-            print('\t{}{}'.format(form('Link: ', *title),
-                                    form('https://dblp.uni-trier.de/' + element['ven']['url'], *argument)),
-                  end='')
-        # ee        level 2
-        if element['ven']['ee'] != '' and level >= 2:
-            ee = element['ven']['ee'].split('\n')
-            print('\t{}{}'.format(form('Alternative link: ', *title),
-                                    form(bash_space.join(ee[:len(ee) - 1]), *argument)))
+        cprint('Venue', *main_obj)
+        print_venue(element['ven'], level)
 
-    print()
+        cprint('Relevant Publications', *main_obj)
+        for pub in element['pub']:
+            print_pub(pub, level)
+
+        # alternative
+        if len(element['alternative']) > 0 and level >= 3:
+            print_alternative(element['alternative'])

@@ -4,6 +4,8 @@ from Ranking.Methods import Rank
 
 
 class Menu:
+    """The Menu class"""
+
     __result_limit = 10
     __ranking = 'vector'
     __fuzzy = False
@@ -33,6 +35,7 @@ class Menu:
     __colorinput = ('purple', 'bold',)
 
     def start(self):
+        """a function that starts the menu loop"""
         check_ixs()
         while True:
             cprint('MAIN MENU\n', 'green', 'bold', 'url', start='\n\t')
@@ -40,12 +43,13 @@ class Menu:
                 print(form(choice[0], *self.__colornumber), form(choice[1], *self.__colortext))
             self.__last_selected = input(form('\nType your choice:\n>  ', *self.__colorinput))
 
-            # ----------- Search ---------------------
+            # ----------- Search ---------------------1
             if self.__last_selected == '1':
+                rank = Rank(self.__result_limit, self.__output_level)
                 if self.__ranking == 'frequency':
-                    Rank.frequency(Rank(), self.__result_limit, self.__fuzzy,self.__output_level)
+                    rank.frequency(self.__fuzzy)
                 else:
-                    Rank.vector(Rank(), self.__result_limit, self.__fuzzy,self.__output_level)
+                    rank.vector(self.__fuzzy)
 
             # ------------ Settings ---------------------
             elif self.__last_selected == '2':
@@ -99,6 +103,8 @@ class Menu:
                 cprint('Ritenta, sarai più fortunato.', 'orange', 'bold', 'url', start='\t', end='\n\n')
 
     def reset(self):
+        """reset options"""
+
         self.__result_limit = 10
         self.__ranking = 'vector'
         self.__fuzzy = False
