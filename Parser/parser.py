@@ -59,7 +59,7 @@ class PublicationHandler(xml.sax.ContentHandler):
     def endDocument(self):
         """Called when the parsing is completed"""
 
-        print(form('Publication parsing completed.', 'green'), flush=True)
+        print(form('Publication indexing completed.', 'green'), flush=True)
 
     def startElement(self, tag, attributes):
         """Called when a publication is parsed"""

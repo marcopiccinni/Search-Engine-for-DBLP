@@ -29,9 +29,9 @@ class Index:
             these two process.
             'Perfectly balanced as everything should be'."""
 
-        nproc = round(cpu_count() / 2)  # round for the case in which we have just 1 proc
+        nproc = round(cpu_count())  # round for the case in which we have just 1 proc
         percentage_mem = 80 / 100
-        available_mem = virtual_memory().available / 1024 ** 2 / 2  # in MB
+        available_mem = virtual_memory().available / 1024 ** 2 # in MB
         limitmb = round(available_mem / nproc * percentage_mem)
 
         return {'procs': nproc, 'limitmb': limitmb, 'multisegment': True}
@@ -105,19 +105,19 @@ class Index:
         if os.path.exists('jl.txt'):
             os.remove('jl.txt')
 
-        # # PUBLICATIONS
-        # t1 = Process(target=self.__indexing, args=(PublicationHandler, pub_schema, parser, self.pub_index_path))
-        # t1.start()
-        #
-        # # VENUE
-        # t2 = Process(target=self.__indexing, args=(VenueHandler, ven_schema, parser, self.ven_index_path, ))
-        # t2.start()
-        #
-        # t1.join()
-        # t2.join()
+        # PUBLICATIONS
+        t1 = Process(target=self.__indexing, args=(PublicationHandler, pub_schema, parser, self.pub_index_path))
+        t1.start()
+        
+        # VENUE
+        t2 = Process(target=self.__indexing, args=(VenueHandler, ven_schema, parser, self.ven_index_path, ))
+        t2.start()
+        
+        t1.join()
+        t2.join()
 
-        self.__indexing(PublicationHandler, pub_schema, parser, self.pub_index_path)
-        self.__indexing(VenueHandler, ven_schema, parser, self.ven_index_path)
+        # self.__indexing(PublicationHandler, pub_schema, parser, self.pub_index_path)
+        # self.__indexing(VenueHandler, ven_schema, parser, self.ven_index_path)
 
         # print('sleeping for 1/2 minutes')
         # time.sleep(30)
