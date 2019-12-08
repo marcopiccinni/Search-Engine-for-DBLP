@@ -3,7 +3,7 @@ def _p_element(pub, ven_list):
         If it founds ones the score is changed."""
 
     # if it has already found a match
-    if pub['ven'] is not '':
+    if len(pub['ven']):
         return pub
 
     pub['key'] = pub['pub']['key']
@@ -12,14 +12,8 @@ def _p_element(pub, ven_list):
 
     for ven in ven_list:
         if not pub['pub']['crossref'] == '' and pub['pub']['crossref'].replace('\n', '') == ven['ven']['key']:
-            if ven['selected']:
-                pub['score'] = ven['score']
-            else:
-                pub['score'] = pub['score'] + ven['score']
-
+            pub['score'] = pub['pub']['o_score'] + ven['ven']['o_score']
             pub['ven'] = ven['ven']
-            pub['ven']['score'] = ven['score']
-            pub['selected'] = 1
             return pub
     return pub
 
@@ -41,14 +35,8 @@ def _v_element(ven, pub_list):
             # if there is a match between a venue and a publication, the ven['key'] become the pub['key].
             # Thanx to this we can after eliminate duplicates data given by [(pubi, venuej), (venuej, pubi)]
             ven['key'] = pub['pub']['key']
-            if pub['selected']:
-                ven['score'] = pub['score']
-            else:
-                ven['score'] = ven['score'] + pub['score']
-
+            ven['score'] = ven['ven']['o_score'] + pub['pub']['o_score']
             ven['pub'] = pub['pub']
-            ven['pub']['score'] = pub['score']
-            ven['selected'] = 1
             return ven
     ven['key'] = ven['ven']['key']
     return ven
@@ -77,6 +65,6 @@ def threshold_rank(publications, venues):
         ordered_list = sorted(list_results, key=lambda s: s['score'], reverse=True)
         if ordered_list[0]['score'] > threshold:
             break
-    # ordered_list = {x['key']: x for x in ordered_list}.values()
 
-    return list({x['key']: x for x in ordered_list}.values())  # return the relevant documents list, filtering by object key.
+    # return the relevant documents list, filtering by object key.
+    return list({x['key']: x for x in ordered_list}.values())

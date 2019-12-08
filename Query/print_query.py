@@ -60,17 +60,17 @@ def print_pub(pub, level):
             print(output_form.format(form('Pages', *title),
                                      form(p['pages'], *argument)),
                   end='')
-        # url       level 1
-        if p['url'] != '':
+        # url       level 2
+        if p['url'] != '' and level >= 2:
             print(output_form.format(form('Link', *title),
-                                     form('https://dblp.uni-trier.de/' + p['url'], *argument)),
-                  end='')
-        # ee        level 1
-        if p['ee'] != '':
+                                     form('https://dblp.uni-trier.de/' + p['url'].replace('\n', ''), *argument)))
+        # ee        level 2
+        if p['ee'] != '' and level >= 2:
             ee = p['ee'].split('\n')
             print(output_form.format(form('Alternative link', *title),
-                                     form(bash_space.join(ee[:len(ee) - 1]), *argument)))
-
+                                     form(bash_space.join(ee[:len(ee) - 1]), *argument)), end='')
+            if not ee[len(ee)-1].endswith('\n'):
+                print()
 
 def print_venue(ven, level):
     """print the venue"""
@@ -101,13 +101,11 @@ def print_venue(ven, level):
     # year      level 3
     if ven['year'] != '' and level >= 3:
         print(output_form.format(form('Year', *title),
-                                 form(ven['year'], *argument)),
-              end='')
+                                 form(ven['year'], *argument)), )
     # url       level 2
     if ven['url'] != '' and level >= 2:
         print(output_form.format(form('Link', *title),
-                                 form('https://dblp.uni-trier.de/' + ven['url'], *argument)),
-              end='')
+                                 form('https://dblp.uni-trier.de/' + ven['url'].replace('\n', ''), *argument)), )
     # ee        level 2
     if ven['ee'] != '' and level >= 2:
         ee = ven['ee'].split('\n')
@@ -149,18 +147,21 @@ def q_print(element, count, level):
     """ This function provide the documents output to the user."""
 
     # - pub in venue --> score = pub.score
-    if len(element['alternative']) == 0 and len(element['pub']):
-        cprint(' '*2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
+    if len(element['alternative']) == 0 and isinstance(element['pub'], dict) and len(element['pub']):
+        cprint(' ' * 2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
         cprint('Publication', *main_obj, start='\t')
         print_pub(element['pub'], level)
 
         if len(element['ven']) and level >= 2:
-            cprint('In Venue', *alt_obj, start='\n\t')
+            if 'added' in element.keys():
+                cprint('In Venue', *alt_obj, start='\n\t')
+            else:
+                cprint('In Relevant Venue', *alt_obj, start='\n\t')
             print_inven(element['ven'], level)
 
     # - venue con alternative --> score = venue.score
     elif len(element['pub']) == 0:
-        cprint(' '*2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
+        cprint(' ' * 2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
         # ------- Venue -----------------
         cprint('Venue', *main_obj, start='\t')
         print_venue(element['ven'], level)
@@ -175,14 +176,15 @@ def q_print(element, count, level):
         for x in element['pub']:
             s += x['o_score']
 
-        cprint(' '*2 + str(count) + ')\t' + 'score: ' + str(round(s, 5)), *score)
+        cprint(' ' * 2 + str(count) + ')\t' + 'score: ' + str(round(s, 5)), *score)
 
         cprint('Venue', *main_obj, start='\t')
         print_venue(element['ven'], level)
-
+        print()
         cprint('Relevant Publications', *main_obj, start='\t')
         for pub in element['pub']:
             print_pub(pub, level)
+            print()
 
         # alternative
         if len(element['alternative']) > 0 and level >= 3:
