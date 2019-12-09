@@ -39,6 +39,7 @@ class Rank:
                     tresult = vs.search(vq_parse, limit=None, )
                     if len(tresult) != 0:
                         result['ven'] = {}
+                        result['added'] = 1
                         for attr in tresult[0].items():
                             result['ven'][attr[0]] = attr[1]
 
@@ -117,6 +118,46 @@ class Rank:
             # cprint('QUI', 'red')
             results = tr(plist, vlist)
 
+        # merge publications that have the same crossref
+        same_venue = list()
+        end_cycle = len(results)
+        end_tot = 0
+        for r in results:
+            if end_tot >= end_cycle:
+                break
+            if len(r['pub']) and len(r['ven']):
+                if len(same_venue):
+                    id = None
+                    f = False
+                    for i in range(len(same_venue)):
+                        if same_venue[i]['key'] == r['ven']['key']:
+                            f = True  # found
+                            id = i  # position
+                            break
+                    if not f:
+                        same_venue.append({'key': r['ven']['key'], 'index': results.index(r)})
+                    elif isinstance(results[id]['pub'], dict):  # create a new element
+                        tmp = {'key': r['ven']['key'],
+                               'score': r['pub']['o_score'] + results[same_venue[id]['index']]['score'],
+                               'pub': [r['pub'],
+                                       results[same_venue[id]['index']]['pub'], ], 'ven': r['ven'],
+                               'alternative': [],}
+                        del results[id]  # remove the id element and the actual element
+                        results.remove(r)
+                        results.append(tmp)  # add the element created
+                        same_venue[id]['index'] = results.index(tmp)  # update the index
+                        end_cycle -= 2 # due to the remotion of the 2 elements
+                    else:
+                        results[id]['pub'].append(r['pub'])
+                        results[id]['score'] += r['pub']['o_score']
+                        results.remove(r)
+                        end_cycle -= 1  # due to the remotion of the element
+                else:
+                    same_venue.append({'key': r['ven']['key'], 'index': results.index(r)})
+
+            end_tot += 1
+        results = sorted(results, key=lambda s: s['score'], reverse=True)
+
         # find correlations
         if self.__output_level == 3:
             self.__find_correlations(results)
@@ -154,7 +195,7 @@ class Rank:
             cprint('Publications found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n')
             plist = []
             for el in presults:
-                tmp = {'key': '', 'score': el.score, 'pub': {}, 'ven': {}, 'selected': 0, 'alternative': []}
+                tmp = {'key': '', 'score': el.score, 'pub': {}, 'ven': {}, 'alternative': []}
                 for attr in el.items():
                     tmp['pub'][attr[0]] = attr[1]
                 tmp['pub']['o_score'] = tmp['score']
@@ -171,7 +212,7 @@ class Rank:
             cprint('Venues found: ' + str(len(vresults)), 'bold', 'lightgrey', 'url', start='\t', end='\n')
             vlist = []
             for el in vresults:
-                tmp = {'key': '', 'score': el.score, 'ven': {}, 'pub': {}, 'selected': 0, 'alternative': []}
+                tmp = {'key': '', 'score': el.score, 'ven': {}, 'pub': {}, 'alternative': []}
                 for attr in el.items():
                     tmp['ven'][attr[0]] = attr[1]
                 tmp['ven']['o_score'] = tmp['score']
@@ -222,7 +263,7 @@ class Rank:
             cprint('Publications found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
             plist = []
             for el in presults:
-                tmp = {'key': '', 'score': el.score, 'pub': {}, 'ven': {}, 'selected': 0, }
+                tmp = {'key': '', 'score': el.score, 'pub': {}, 'ven': {}, }
                 for attr in el.items():
                     tmp['pub'][attr[0]] = attr[1]
                 plist.append(tmp)
@@ -254,7 +295,7 @@ class Rank:
             cprint('Venues found: ' + str(len(vresults)), 'bold', 'lightgrey', 'url', start='\t', end='\n')
             vlist = []
             for el in vresults:
-                tmp = {'key': '', 'score': el.score, 'ven': {}, 'pub': {}, 'selected': 0, }
+                tmp = {'key': '', 'score': el.score, 'ven': {}, 'pub': {}, }
                 for attr in el.items():
                     tmp['ven'][attr[0]] = attr[1]
                 vlist.append(tmp)
