@@ -44,7 +44,7 @@ Otherwise it is possible to use these indexes generated with the dblp dump (2019
 
 ##### OPTIONS
   Some options can be modified to change the behaviours of the search and rank modules.
-  It is possible to change the _ranking model_ (vector or frequency), the _maximal number of documents_ retrieved and _showed attributes_.
+  It is possible to change the _ranking model_ (bm25f or frequency), the _maximal number of documents_ retrieved and _showed attributes_.
   Moreover there is the fuzzy option: it allows the research of similar terms, but this could generate more false positives.
   
   
