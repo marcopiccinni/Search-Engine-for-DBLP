@@ -174,7 +174,7 @@ class Rank:
 
         self.__output = list()
 
-    def vector(self, fuzzy):
+    def bm25f(self, fuzzy):
         """ Used to get the rilevant documents. This ranking method use the default whoosh ranking method.
             If you want to use fuzzy search of the query terms set fuzzy=True"""
 

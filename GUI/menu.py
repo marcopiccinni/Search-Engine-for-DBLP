@@ -7,7 +7,7 @@ class Menu:
     """The Menu class"""
 
     __result_limit = 10
-    __ranking = 'vector'
+    __ranking = 'bm25f'
     __fuzzy = False
     __last_selected = 0
     __output_level = 2
@@ -22,7 +22,7 @@ class Menu:
                       ('4. ', 'Output level.'),
                       ('5. ', 'Reset settings.'),
                       ]
-    __ranking_list = [('1. ', 'Vector model.'),
+    __ranking_list = [('1. ', 'bm25f model.'),
                       ('2. ', 'Frequency model.'),
                       ]
     __level_list = [('1. ', 'Essential output.'),
@@ -49,7 +49,7 @@ class Menu:
                 if self.__ranking == 'frequency':
                     rank.frequency(self.__fuzzy)
                 else:
-                    rank.vector(self.__fuzzy)
+                    rank.bm25f(self.__fuzzy)
 
             # ------------ Settings ---------------------
             elif self.__last_selected == '2':
@@ -63,7 +63,7 @@ class Menu:
                     if c == '2':
                         self.__ranking = 'frequency'
                     else:
-                        self.__ranking = 'vector'
+                        self.__ranking = 'bm25f'
                 elif c == '2':
                     limit = input(form('\nHow many results do you want to print?\n>  ', *self.__colorinput))
                     self.__result_limit = int(limit)
@@ -106,6 +106,6 @@ class Menu:
         """reset options"""
 
         self.__result_limit = 10
-        self.__ranking = 'vector'
+        self.__ranking = 'bm25f'
         self.__fuzzy = False
         self.__output_level = 2
