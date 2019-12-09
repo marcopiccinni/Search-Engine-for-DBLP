@@ -105,6 +105,7 @@ class Index:
         if os.path.exists('jl.txt'):
             os.remove('jl.txt')
 
+	# comment if you don't want to allow parser to execute in parallel mode
         # PUBLICATIONS
         t1 = Process(target=self.__indexing, args=(PublicationHandler, pub_schema, parser, self.pub_index_path))
         t1.start()
@@ -115,12 +116,11 @@ class Index:
 
         t1.join()
         t2.join()
-
+	
+	# uncomment to allow parser to execute in sequential mode
         # self.__indexing(PublicationHandler, pub_schema, parser, self.pub_index_path)
         # self.__indexing(VenueHandler, ven_schema, parser, self.ven_index_path)
 
-        # print('sleeping for 1/2 minutes')
-        # time.sleep(30)
         self.__insert_journal()
 
         end = time.time()
