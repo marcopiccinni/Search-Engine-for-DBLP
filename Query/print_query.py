@@ -87,8 +87,7 @@ def print_venue(ven, level):
     # publisher level 1
     if ven['publisher'] != '':
         print(output_form.format(form('Publisher', *title),
-                                 form(ven['publisher'], *argument)),
-              end='')
+                                 form(ven['publisher'].strip(), *argument)))
     # author    level 3
     if ven['author'] != '' and level >= 3:
         authors = ven['author'].split('\n')
@@ -148,14 +147,15 @@ def q_print(element, count, level):
     """ This function provide the documents output to the user."""
 
     # - pub in venue --> score = pub.score
-    if len(element['alternative']) == 0 and \
-            (isinstance(element['pub'], dict) or (isinstance(element['pub'], list) and len(element['pub']) == 1)):
+    if len(element['alternative']) == 0 and (
+            (isinstance(element['pub'], dict) and len(element['pub'])) or (
+                    isinstance(element['pub'], list) and len(element['pub']) == 1)):
         cprint(' ' * 2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
         cprint('Publication', *main_obj, start='\t')
         if isinstance(element['pub'], dict):
             print_pub(element['pub'], level)
         else:
-            print_pub(element['pub'][0],level)
+            print_pub(element['pub'][0], level)
 
         if len(element['ven']) and level >= 2:
             if 'added' in element.keys():
