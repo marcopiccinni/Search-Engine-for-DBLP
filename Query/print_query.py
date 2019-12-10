@@ -149,7 +149,7 @@ def q_print(element, count, level):
 
     # - pub in venue --> score = pub.score
     if len(element['alternative']) == 0 and \
-            (isinstance(element['pub'], dict) or (isinstance(element['pub'], list) and len(element['pub']))):
+            (isinstance(element['pub'], dict) or (isinstance(element['pub'], list) and len(element['pub']) == 1)):
         cprint(' ' * 2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
         cprint('Publication', *main_obj, start='\t')
         print_pub(element['pub'], level)
