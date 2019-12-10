@@ -152,7 +152,10 @@ def q_print(element, count, level):
             (isinstance(element['pub'], dict) or (isinstance(element['pub'], list) and len(element['pub']))):
         cprint(' ' * 2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
         cprint('Publication', *main_obj, start='\t')
-        print_pub(element['pub'], level)
+        if isinstance(element['pub'], dict):
+            print_pub(element['pub'], level)
+        else:
+            print_pub(element['pub'][0],level)
 
         if len(element['ven']) and level >= 2:
             if 'added' in element.keys():
