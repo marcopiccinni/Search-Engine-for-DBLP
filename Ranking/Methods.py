@@ -46,7 +46,8 @@ class Rank:
                 self.__output.append(result)
 
             # venue without pub
-            elif len(result['pub']) == 0:
+            elif len(result['pub']) == 0 or (
+                    isinstance(result['pub'], list) and len(result['pub']) > 1):
                 result['alternative'] = []
 
                 with self.pix.searcher(weighting=Frequency) as ps:
@@ -141,12 +142,12 @@ class Rank:
                                'score': r['pub']['o_score'] + results[same_venue[id]['index']]['score'],
                                'pub': [r['pub'],
                                        results[same_venue[id]['index']]['pub'], ], 'ven': r['ven'],
-                               'alternative': [],}
+                               'alternative': [], }
                         del results[id]  # remove the id element and the actual element
                         results.remove(r)
                         results.append(tmp)  # add the element created
                         same_venue[id]['index'] = results.index(tmp)  # update the index
-                        end_cycle -= 2 # due to the remotion of the 2 elements
+                        end_cycle -= 2  # due to the remotion of the 2 elements
                     else:
                         results[id]['pub'].append(r['pub'])
                         results[id]['score'] += r['pub']['o_score']
