@@ -45,7 +45,7 @@ class Rank:
 
                 self.__output.append(result)
 
-            # venue without pub
+            # venue without pub or venue with a list of pubs
             elif len(result['pub']) == 0 or (
                     isinstance(result['pub'], list) and len(result['pub']) > 1):
                 result['alternative'] = []
@@ -59,7 +59,7 @@ class Rank:
                         tmp = dict()
                         for el in tresult:
                             for attr in el.items():
-                                if attr[0] == 'title':
+                                if attr[0] == 'title' and attr[1] not in [x['title'] for x in result['pub']]:
                                     plist.append(attr[1])
                                     break
 
