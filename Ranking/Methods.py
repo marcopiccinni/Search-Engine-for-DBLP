@@ -53,7 +53,7 @@ class Rank:
                     pq_parse = QueryParser('crossref', self.pix.schema).parse(result['ven']['key'])
                     tresult = ps.search(pq_parse, limit=None, )
 
-                    if len(tresult) is not 0:
+                    if len(tresult):
                         plist = []
                         tmp = dict()
                         for el in tresult:
@@ -85,7 +85,7 @@ class Rank:
                 with self.pix.searcher() as ps:
                     pq_parse = QueryParser('crossref', self.pix.schema).parse(tmp['key'])
                     tresult = ps.search(pq_parse, limit=None, )
-                    if len(tresult) is not 0:
+                    if len(tresult):
                         for el in tresult:
                             for attr in el.items():
                                 if attr[0] == 'title' and attr[1] not in [x['title'] for x in tmp['pub']]:

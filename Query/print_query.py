@@ -69,8 +69,9 @@ def print_pub(pub, level):
             ee = p['ee'].split('\n')
             print(output_form.format(form('Alternative link', *title),
                                      form(bash_space.join(ee[:len(ee) - 1]), *argument)), end='')
-            if not ee[len(ee)-1].endswith('\n'):
+            if not ee[len(ee) - 1].endswith('\n'):
                 print()
+
 
 def print_venue(ven, level):
     """print the venue"""
@@ -147,7 +148,8 @@ def q_print(element, count, level):
     """ This function provide the documents output to the user."""
 
     # - pub in venue --> score = pub.score
-    if len(element['alternative']) == 0 and isinstance(element['pub'], dict) and len(element['pub']):
+    if len(element['alternative']) == 0 and \
+            (isinstance(element['pub'], dict) or (isinstance(element['pub'], list) and len(element['pub']))):
         cprint(' ' * 2 + str(count) + ')\t' + 'score: ' + str(round(element['score'], 5)), *score)
         cprint('Publication', *main_obj, start='\t')
         print_pub(element['pub'], level)
@@ -167,7 +169,7 @@ def q_print(element, count, level):
         print_venue(element['ven'], level)
 
         # alternative
-        if len(element['alternative']) > 0 and level >= 3:
+        if len(element['alternative']) and level >= 3:
             print_alternative(element['alternative'])
 
     # - venue con pubs e alternative --> score = original(venue.score + pubs.score)
@@ -187,7 +189,7 @@ def q_print(element, count, level):
             print()
 
         # alternative
-        if len(element['alternative']) > 0 and level >= 3:
+        if len(element['alternative']) and level >= 3:
             print_alternative(element['alternative'])
 
     print()
