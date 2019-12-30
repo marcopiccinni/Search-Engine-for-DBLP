@@ -100,7 +100,7 @@ class Menu:
                 return
 
             else:
-                cprint('Ritenta, sarai più fortunato.', 'orange', 'bold', 'url', start='\t', end='\n\n')
+                cprint('Try again, you will be luckier!', 'orange', 'bold', 'url', start='\t', end='\n\n')
 
     def reset(self):
         """reset options"""

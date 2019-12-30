@@ -117,8 +117,9 @@ def print_alternative(alt):
     """print the others pubs contained in a given venue"""
 
     cprint('Pubs Included', *alt_obj, start='\t')
-    for p in alt:
-        cprint(p.strip(), *argument, start='\t- ')
+    [cprint(p.strip(), *argument, start='\t- ') for p in alt[:10] if p != '']
+    if len(alt) > 10:
+        cprint(' ...', *argument, start='\t- ')
 
 
 def print_inven(inven, level):
