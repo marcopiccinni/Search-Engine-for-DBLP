@@ -116,7 +116,6 @@ class Rank:
                 el['key'] = el['pub']['key']
             results = plist
         else:
-            # cprint('QUI', 'red')
             results = tr(plist, vlist)
 
         # merge publications that have the same crossref
@@ -180,20 +179,31 @@ class Rank:
             If you want to use fuzzy search of the query terms set fuzzy=True"""
 
         pquery, vquery = to_whoosh_query(self.__ask_query())  # Get the query used in whoosh
+        print()
 
         # ----------- PUBLICATIONS ----------------------
         with self.pix.searcher() as ps:
             # "" search for phrase in which the maximum distance between each word is 1
             # '' if you have to include characters in a term that are normally threated specially by the parsers, such
             #   as spaces, colons, or brackets.
-            if fuzzy:
-                pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], self.pix.schema,
-                                          termclass=FuzzyTerm).parse(pquery)
-            else:
-                pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], self.pix.schema).parse(pquery)
-            presults = ps.search(pquery, limit=None)
+            print("pquery: ", pquery)
 
-            cprint('Publications found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n')
+            if fuzzy:
+                if 'pubtype' in pquery:  # to prevent a bad search on the search term
+                    pquery = MultifieldParser(['author', 'title', 'year'], self.pix.schema,
+                                              termclass=FuzzyTerm).parse(pquery)
+                else:
+                    pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], self.pix.schema,
+                                              termclass=FuzzyTerm).parse(pquery)
+            else:
+                if 'pubtype' in pquery:  # to prevent a bad search on the search term
+                    pquery = MultifieldParser(['author', 'title', 'year'], self.pix.schema).parse(pquery)
+                else:
+                    pquery = MultifieldParser(['pubtype', 'author', 'title', 'year'], self.pix.schema).parse(pquery)
+
+            cprint("Pub Query: " + str(pquery), 'lightgrey', 'italic', start='\t')
+            presults = ps.search(pquery, limit=None)
+            cprint('Publications found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\t')
             plist = []
             for el in presults:
                 tmp = {'key': '', 'score': el.score, 'pub': {}, 'ven': {}, 'alternative': []}
@@ -208,9 +218,10 @@ class Rank:
                 vquery = MultifieldParser(['title', 'publisher'], self.vix.schema, termclass=FuzzyTerm).parse(vquery)
             else:
                 vquery = MultifieldParser(['title', 'publisher'], self.vix.schema).parse(vquery)
-            vresults = vs.search(vquery, limit=None)
 
-            cprint('Venues found: ' + str(len(vresults)), 'bold', 'lightgrey', 'url', start='\t', end='\n')
+            cprint("Ven Query: " + str(vquery), 'lightgrey', 'italic', start='\t')
+            vresults = vs.search(vquery, limit=None)
+            cprint('Venues found: ' + str(len(vresults)), 'bold', 'lightgrey', 'url', start='\t')
             vlist = []
             for el in vresults:
                 tmp = {'key': '', 'score': el.score, 'ven': {}, 'pub': {}, 'alternative': []}
@@ -222,13 +233,16 @@ class Rank:
 
     def frequency(self, fuzzy):
         """ Used to get the rilevant documents using the frequency of the searched terms in the document.
-            If you want to use fuzzy search of the query terms set fuzzy=True"""
+            If you want to use fuzzy search of the query terms set fuzzy=True """
 
         pquery, vquery = to_whoosh_query(self.__ask_query())  # Get the query used in whoosh
         # Whoosh Frequency doesn't support the OR query, so it will be splitted to merge later.
         pquery = pquery.split(' OR ')
         vquery = vquery.split(' OR ')
 
+        pqprint = set()
+        vqprint = set()
+        print()
         # ----------- PUBLICATIONS ----------------------
         with self.pix.searcher(weighting=Frequency) as ps:
             # "" search for phrase in which the maximum distance between each word is 1
@@ -238,8 +252,10 @@ class Rank:
             for pq in pquery:
                 if fuzzy:
                     pq_parse = QueryParser('title', self.pix.schema, termclass=FuzzyTerm).parse(pq)
+                    pqprint.add(str(pq_parse))
                 else:
                     pq_parse = QueryParser('title', self.pix.schema).parse(pq)
+                    pqprint.add(str(pq_parse))
 
                 if presults is not None:
                     tresult = ps.search(pq_parse, limit=None, )
@@ -250,23 +266,31 @@ class Rank:
                 if not pq.startswith(('title', 'author', 'year'), ):
                     if fuzzy:
                         pq_parse = QueryParser('author', self.pix.schema, termclass=FuzzyTerm).parse(pq)
+                        pqprint.add(str(pq_parse))
                     else:
                         pq_parse = QueryParser('author', self.pix.schema).parse(pq)
+                        pqprint.add(str(pq_parse))
+
                     tresult = ps.search(pq_parse, limit=None, )
                     presults.upgrade_and_extend(tresult)
                     if fuzzy:
                         pq_parse = QueryParser('year', self.pix.schema, termclass=FuzzyTerm).parse(pq)
+                        pqprint.add(str(pq_parse))
                     else:
                         pq_parse = QueryParser('year', self.pix.schema).parse(pq)
+                        pqprint.add(str(pq_parse))
+
                     tresult = ps.search(pq_parse, limit=None, )
                     presults.upgrade_and_extend(tresult)
 
-            cprint('Publications found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\n\t', end='\n\n')
+            cprint("Pub Query: " + ' OR '.join(pqprint), 'lightgrey', 'italic', start='\t')
+            cprint('Publications found: ' + str(len(presults)), 'bold', 'lightgrey', 'url', start='\t')
             plist = []
             for el in presults:
-                tmp = {'key': '', 'score': el.score, 'pub': {}, 'ven': {}, }
+                tmp = {'key': '', 'score': el.score, 'pub': {}, 'ven': {}, 'alternative': []}
                 for attr in el.items():
                     tmp['pub'][attr[0]] = attr[1]
+                tmp['pub']['o_score'] = tmp['score']
                 plist.append(tmp)
 
         # --------------- VENUES --------------------------
@@ -277,8 +301,11 @@ class Rank:
                 # print('2: ', vq)
                 if fuzzy:
                     vq_parse = QueryParser('title', self.vix.schema, termclass=FuzzyTerm).parse(vq)
+                    vqprint.add(str(vq_parse))
                 else:
                     vq_parse = QueryParser('title', self.vix.schema).parse(vq)
+                    vqprint.add(str(vq_parse))
+
                 if vresults is not None:
                     tresult = vs.search(vq_parse, limit=None)
                     vresults.upgrade_and_extend(tresult)
@@ -288,17 +315,22 @@ class Rank:
                 if not vq.startswith(('title:', 'publisher'), ):
                     if fuzzy:
                         vq_parse = QueryParser('publisher', self.vix.schema, termclass=FuzzyTerm).parse(vq)
+                        vqprint.add(str(vq_parse))
                     else:
                         vq_parse = QueryParser('publisher', self.vix.schema).parse(vq)
+                        vqprint.add(str(vq_parse))
+
                     tresult = vs.search(vq_parse, limit=None)
                     vresults.upgrade_and_extend(tresult)
 
-            cprint('Venues found: ' + str(len(vresults)), 'bold', 'lightgrey', 'url', start='\t', end='\n')
+            cprint("Ven Query: " + ' OR '.join(vqprint), 'lightgrey', 'italic', start='\t')
+            cprint('Venues found: ' + str(len(vresults)), 'bold', 'lightgrey', 'url', start='\t')
             vlist = []
             for el in vresults:
-                tmp = {'key': '', 'score': el.score, 'ven': {}, 'pub': {}, }
+                tmp = {'key': '', 'score': el.score, 'ven': {}, 'pub': {}, 'alternative': []}
                 for attr in el.items():
                     tmp['ven'][attr[0]] = attr[1]
+                tmp['ven']['o_score'] = tmp['score']
                 vlist.append(tmp)
 
         self.__results(plist, vlist)  # Call the function to print the results.
