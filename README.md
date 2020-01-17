@@ -1,8 +1,6 @@
 # Search-Engine-for-DBLP
 This is a University project [(UNIMORE)](https://www.unimore.it/) to search in the [DBLP database](https://dblp.uni-trier.de/) for computer science biography.
-In the doc folder it is possible to find an italian presentation in the following formats:
-- pptx
-- pdf
+In the doc folder is possible to find an italian presentation in _pptx_ and _pdf_ formats:
 
 ### REQUIREMENTS
 - python3
