@@ -2,6 +2,8 @@
 This is a University project [(UNIMORE)](https://www.unimore.it/) to search in the [DBLP database](https://dblp.uni-trier.de/) for computer science biography.
 
 ### REQUIREMENTS
+- python3
+
 The following pip packages are needed in order to compile DBLP Searcher : 
 - _psutil==5.6.3_
 - _Whoosh==2.7.4_
