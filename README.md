@@ -18,7 +18,7 @@ pip3 install -r requirements.txt
 ### USAGE
 Once the requirements are installed, run the _main.py_ file: 
 ``` 
-./main.py
+python3 main.py
 ```
 If there isn't the index directory, the program asks you to create indexes giving it the dblp file path.
 It is possile to download the required compressed file using [this link](https://dblp.uni-trier.de/xml/dblp.xml.gz), after unpacking it and use this file path.
