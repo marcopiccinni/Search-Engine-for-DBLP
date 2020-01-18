@@ -186,7 +186,6 @@ class Rank:
             # "" search for phrase in which the maximum distance between each word is 1
             # '' if you have to include characters in a term that are normally threated specially by the parsers, such
             #   as spaces, colons, or brackets.
-            print("pquery: ", pquery)
 
             if fuzzy:
                 if 'pubtype' in pquery:  # to prevent a bad search on the search term

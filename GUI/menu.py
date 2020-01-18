@@ -45,11 +45,14 @@ class Menu:
 
             # ----------- Search ---------------------1
             if self.__last_selected == '1':
-                rank = Rank(self.__result_limit, self.__output_level)
-                if self.__ranking == 'frequency':
-                    rank.frequency(self.__fuzzy)
-                else:
-                    rank.bm25f(self.__fuzzy)
+                try:
+                    rank = Rank(self.__result_limit, self.__output_level)
+                    if self.__ranking == 'frequency':
+                        rank.frequency(self.__fuzzy)
+                    else:
+                        rank.bm25f(self.__fuzzy)
+                except:
+                    cprint('Please, retry using the right sintax.', 'orange', 'bold', 'url', start='\r\t', end='\n\n')
 
             # ------------ Settings ---------------------
             elif self.__last_selected == '2':
